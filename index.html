@@ -1,0 +1,830 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TinkerTendo</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&display=swap');
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --cyan: #2ee8d5;
+      --yellow: #f5d623;
+      --transition: 0.4s ease;
+    }
+
+    /* ——— DARK THEME (default) ——— */
+    [data-theme="dark"] {
+      --bg: #1c1c1c;
+      --surface: #2b2b2b;
+      --surface-border: #3d3d3d;
+      --text: #d8d8d8;
+      --text-muted: #888;
+      --frame-bg: #1c1c1c;
+      --frame-border: #3a3a3a;
+      --card-shadow: inset 0 1px 0 rgba(255,255,255,0.04), 0 2px 8px rgba(0,0,0,0.5);
+      --dot-color: #4a4a4a;
+      --footer-bg: #232323;
+      --footer-border: #333;
+    }
+
+    /* ——— LIGHT THEME ——— */
+    [data-theme="light"] {
+      --bg: #f7f2ea;
+      --surface: #ffffff;
+      --surface-border: #d0c8bc;
+      --text: #2a2a2a;
+      --text-muted: #666;
+      --frame-bg: #f7f2ea;
+      --frame-border: #c8c0b4;
+      --card-shadow: 0 1px 4px rgba(0,0,0,0.06);
+      --dot-color: #c8c0b4;
+      --footer-bg: #efe9e0;
+      --footer-border: #d0c8bc;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Space Mono', monospace;
+      transition: background var(--transition), color var(--transition);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      padding: 24px 16px;
+    }
+
+    /* ——— CONSOLE FRAME ——— */
+    .console-frame {
+      max-width: 800px;
+      width: 100%;
+      background: var(--frame-bg);
+      border: 2px solid var(--frame-border);
+      border-radius: 14px;
+      position: relative;
+      overflow: hidden;
+      transition: background var(--transition), border-color var(--transition);
+    }
+
+    /* Film-strip edge dashes */
+    .console-frame::before,
+    .console-frame::after {
+      content: '';
+      position: absolute;
+      top: 16px;
+      bottom: 16px;
+      width: 6px;
+      z-index: 1;
+      transition: background var(--transition);
+    }
+    .console-frame::before { left: 10px; }
+    .console-frame::after { right: 10px; }
+
+    [data-theme="dark"] .console-frame::before,
+    [data-theme="dark"] .console-frame::after {
+      background: repeating-linear-gradient(
+        to bottom,
+        var(--dot-color) 0px,
+        var(--dot-color) 6px,
+        transparent 6px,
+        transparent 16px
+      );
+    }
+    [data-theme="light"] .console-frame::before,
+    [data-theme="light"] .console-frame::after {
+      background: repeating-linear-gradient(
+        to bottom,
+        var(--dot-color) 0px,
+        var(--dot-color) 2px,
+        transparent 2px,
+        transparent 10px
+      );
+    }
+
+    .inner-content {
+      padding: 36px 42px 28px;
+      position: relative;
+      z-index: 2;
+    }
+
+    /* Theme toggle */
+    .theme-toggle {
+      position: absolute;
+      top: 14px;
+      right: 42px;
+      z-index: 10;
+      cursor: pointer;
+      background: var(--surface);
+      border: 1px solid var(--surface-border);
+      border-radius: 20px;
+      padding: 5px 14px;
+      color: var(--text-muted);
+      font-family: 'Space Mono', monospace;
+      font-size: 10px;
+      transition: all var(--transition);
+      letter-spacing: 0.5px;
+    }
+    .theme-toggle:hover { border-color: var(--cyan); color: var(--text); }
+
+    /* Tagline */
+    .tagline {
+      font-size: 21px;
+      font-weight: 700;
+      line-height: 1.45;
+      margin-bottom: 28px;
+      max-width: 540px;
+    }
+
+    /* ——— GRID ——— */
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 10px;
+      margin-bottom: 0;
+    }
+
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--surface-border);
+      border-radius: 12px;
+      aspect-ratio: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+      box-shadow: var(--card-shadow);
+      transition: background var(--transition), border-color var(--transition), box-shadow var(--transition), transform 0.15s ease;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+    .card:hover { transform: scale(1.03); border-color: var(--cyan); }
+    .card:active { transform: scale(0.97); }
+
+    /* =========================================================
+       CARD 1 — JOYSTICK (cross-base + stick + yellow head)
+       ========================================================= */
+    .joystick-wrap {
+      width: 55%;
+      height: 70%;
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    /* vertical stick */
+    .joystick-stick {
+      position: absolute;
+      width: 3px;
+      height: 60%;
+      bottom: 18%;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--text-muted);
+    }
+    /* horizontal crossbar at base */
+    .joystick-crossbar {
+      position: absolute;
+      width: 50%;
+      height: 3px;
+      bottom: 18%;
+      left: 25%;
+      background: var(--text-muted);
+    }
+    /* yellow square head */
+    .joystick-head {
+      position: absolute;
+      top: 8%;
+      left: 50%;
+      transform: translate(-50%, 0);
+      width: 30px;
+      height: 30px;
+      background: var(--yellow);
+      border-radius: 5px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+    }
+    .joystick-head.wiggle {
+      animation: joystickWiggle 0.6s ease;
+    }
+    @keyframes joystickWiggle {
+      0%   { transform: translate(-50%, 0) rotate(0deg); }
+      20%  { transform: translate(-40%, -6px) rotate(10deg); }
+      40%  { transform: translate(-60%, 4px) rotate(-8deg); }
+      60%  { transform: translate(-45%, -3px) rotate(5deg); }
+      80%  { transform: translate(-55%, 2px) rotate(-3deg); }
+      100% { transform: translate(-50%, 0) rotate(0deg); }
+    }
+
+    /* =========================================================
+       CARD 2 — LOGO
+       ========================================================= */
+    .logo-circle {
+      width: 76%;
+      height: 76%;
+      background: var(--yellow);
+      border-radius: 50%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      transition: transform 0.3s ease;
+      gap: 1px;
+    }
+    .logo-icon {
+      width: 28px;
+      height: 22px;
+      margin-bottom: 2px;
+    }
+    /* SVG warehouse icon */
+    .logo-icon svg {
+      width: 100%;
+      height: 100%;
+    }
+    .logo-text {
+      font-weight: 700;
+      font-size: 12px;
+      color: #1a1a1a;
+      line-height: 1.1;
+      text-align: center;
+      letter-spacing: 1.5px;
+    }
+    .logo-est {
+      font-size: 8px;
+      color: #666;
+      margin-top: 2px;
+      letter-spacing: 2px;
+    }
+    .logo-circle.spin { animation: logoSpin 0.8s ease; }
+    @keyframes logoSpin {
+      0%   { transform: rotate(0deg) scale(1); }
+      50%  { transform: rotate(180deg) scale(1.1); }
+      100% { transform: rotate(360deg) scale(1); }
+    }
+
+    /* =========================================================
+       CARD 3 — BUTTON CLUSTER (4 circles in diamond)
+       ========================================================= */
+    .btn-cluster {
+      width: 56%;
+      height: 56%;
+      position: relative;
+    }
+    .cluster-btn {
+      position: absolute;
+      width: 26px;
+      height: 26px;
+      background: var(--cyan);
+      border-radius: 50%;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.25);
+    }
+    .cluster-btn.pop { animation: btnPop 0.3s ease; }
+    @keyframes btnPop {
+      0%   { transform: scale(1); }
+      50%  { transform: scale(1.3); }
+      100% { transform: scale(1); }
+    }
+    .cluster-btn:nth-child(1) { top: 0; left: 50%; transform: translateX(-50%); }     /* top */
+    .cluster-btn:nth-child(2) { bottom: 0; left: 50%; transform: translateX(-50%); }  /* bottom */
+    .cluster-btn:nth-child(3) { top: 50%; left: 0; transform: translateY(-50%); }     /* left */
+    .cluster-btn:nth-child(4) { top: 50%; right: 0; transform: translateY(-50%); }    /* right */
+
+    /* =========================================================
+       CARD 4 — TOGGLE SWITCH (horizontal lines on knob)
+       ========================================================= */
+    .toggle-track {
+      width: 48px;
+      height: 78px;
+      background: var(--cyan);
+      border-radius: 14px;
+      position: relative;
+      cursor: pointer;
+    }
+    .toggle-knob {
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 38px;
+      height: 36px;
+      background: var(--yellow);
+      border-radius: 8px;
+      top: 5px;
+      transition: top 0.3s cubic-bezier(0.68, -0.3, 0.32, 1.3);
+      box-shadow: 0 2px 5px rgba(0,0,0,0.25);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .toggle-knob .lines {
+      width: 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+    }
+    .toggle-knob .lines span {
+      display: block;
+      height: 2px;
+      background: rgba(0,0,0,0.2);
+      border-radius: 1px;
+    }
+    .toggle-track.on .toggle-knob {
+      top: calc(100% - 41px);
+    }
+
+    /* =========================================================
+       CARD 5 — CARTRIDGE
+       ========================================================= */
+    .cartridge {
+      width: 54px;
+      height: 44px;
+      background: var(--yellow);
+      border-radius: 6px;
+      position: relative;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.25);
+    }
+    .cartridge-label {
+      position: absolute;
+      top: 5px; left: 5px; right: 5px; bottom: 12px;
+      background: repeating-linear-gradient(
+        to bottom,
+        rgba(0,0,0,0.07) 0px,
+        rgba(0,0,0,0.07) 2px,
+        transparent 2px,
+        transparent 5px
+      );
+      border-radius: 2px;
+    }
+    .cartridge.eject { animation: cartridgeEject 0.6s ease; }
+    @keyframes cartridgeEject {
+      0%   { transform: translateY(0); }
+      30%  { transform: translateY(-20px); }
+      60%  { transform: translateY(-18px) rotate(3deg); }
+      100% { transform: translateY(0) rotate(0deg); }
+    }
+
+    /* =========================================================
+       CARD 6 — POWER BUTTON (tall cyan rect + yellow dot)
+       ========================================================= */
+    .power-btn {
+      width: 50px;
+      height: 72px;
+      background: var(--cyan);
+      border-radius: 8px;
+      position: relative;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.25);
+    }
+    .power-btn .indicator {
+      position: absolute;
+      top: 12px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 8px;
+      height: 8px;
+      background: var(--yellow);
+      border-radius: 50%;
+      transition: box-shadow 0.3s ease;
+      box-shadow: 0 0 0 0 rgba(245, 214, 35, 0);
+    }
+    .power-btn.active .indicator {
+      box-shadow: 0 0 10px 4px rgba(245, 214, 35, 0.5);
+    }
+    .power-btn.pulse .indicator { animation: powerPulse 0.6s ease; }
+    @keyframes powerPulse {
+      0%   { box-shadow: 0 0 0 0 rgba(245, 214, 35, 0.8); }
+      100% { box-shadow: 0 0 20px 10px rgba(245, 214, 35, 0); }
+    }
+
+    /* =========================================================
+       CARD 7 — D-PAD
+       ========================================================= */
+    .dpad {
+      width: 62px;
+      height: 62px;
+      position: relative;
+    }
+    .dpad-h, .dpad-v {
+      position: absolute;
+      background: var(--cyan);
+      border-radius: 4px;
+    }
+    .dpad-h { width: 100%; height: 34%; top: 33%; left: 0; }
+    .dpad-v { width: 34%; height: 100%; top: 0; left: 33%; }
+    .dpad-center {
+      position: absolute;
+      width: 34%; height: 34%; top: 33%; left: 33%;
+      background: var(--cyan);
+      z-index: 1;
+    }
+    .dpad.pressed-up .dpad-v    { background: #22cfc0; }
+    .dpad.pressed-down .dpad-v  { background: #22cfc0; }
+    .dpad.pressed-left .dpad-h  { background: #22cfc0; }
+    .dpad.pressed-right .dpad-h { background: #22cfc0; }
+    .dpad.wiggle { animation: dpadWiggle 0.5s ease; }
+    @keyframes dpadWiggle {
+      0%   { transform: rotate(0); }
+      25%  { transform: rotate(6deg); }
+      50%  { transform: rotate(-6deg); }
+      75%  { transform: rotate(3deg); }
+      100% { transform: rotate(0); }
+    }
+
+    /* =========================================================
+       CARD 8 — SWITCH 2 (diagonal mesh on knob)
+       ========================================================= */
+    .switch2-track {
+      width: 48px;
+      height: 78px;
+      background: var(--cyan);
+      border-radius: 14px;
+      position: relative;
+      cursor: pointer;
+    }
+    .switch2-knob {
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 38px;
+      height: 36px;
+      background: var(--yellow);
+      border-radius: 8px;
+      top: 5px;
+      transition: top 0.3s cubic-bezier(0.68, -0.3, 0.32, 1.3);
+      box-shadow: 0 2px 5px rgba(0,0,0,0.25);
+      overflow: hidden;
+    }
+    .switch2-knob .mesh {
+      position: absolute;
+      top: 3px; left: 3px; right: 3px; bottom: 3px;
+      background: repeating-linear-gradient(
+        -45deg,
+        rgba(0,0,0,0.09) 0px,
+        rgba(0,0,0,0.09) 2px,
+        transparent 2px,
+        transparent 5px
+      );
+      border-radius: 5px;
+    }
+    .switch2-track.on .switch2-knob {
+      top: calc(100% - 41px);
+    }
+
+    /* =========================================================
+       CARD 9 — DIAL (thick donut ring, cyan + yellow)
+       ========================================================= */
+    .dial-wrap {
+      width: 72px;
+      height: 72px;
+      position: relative;
+    }
+    .dial-ring {
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      background: conic-gradient(
+        from 180deg,
+        var(--yellow) 0deg,
+        var(--yellow) 100deg,
+        var(--cyan) 100deg,
+        var(--cyan) 360deg
+      );
+    }
+    .dial-center {
+      position: absolute;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      width: 42%;
+      height: 42%;
+      background: var(--surface);
+      border-radius: 50%;
+      transition: background var(--transition);
+    }
+
+    /* =========================================================
+       CARD 10 — SLIDERS (3 tracks + cyan knobs)
+       ========================================================= */
+    .sliders-wrap {
+      width: 72%;
+      height: 55%;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+    .slider-row {
+      display: flex;
+      align-items: center;
+      height: 18px;
+    }
+    .slider-track {
+      flex: 1;
+      height: 3px;
+      background: var(--text-muted);
+      border-radius: 2px;
+      position: relative;
+      margin-right: 8px;
+    }
+    .slider-fill {
+      position: absolute;
+      left: 0; top: 0;
+      height: 100%;
+      background: var(--cyan);
+      border-radius: 2px;
+      transition: width 0.4s ease;
+    }
+    .slider-knob {
+      width: 16px;
+      height: 16px;
+      background: var(--cyan);
+      border-radius: 50%;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.3);
+      flex-shrink: 0;
+      transition: transform 0.15s ease;
+    }
+    .slider-knob:hover { transform: scale(1.2); }
+
+    /* ——— FOOTER ——— */
+    .footer {
+      background: var(--footer-bg);
+      border-top: 1px solid var(--footer-border);
+      padding: 22px 42px 26px;
+      display: grid;
+      grid-template-columns: 1fr 1.2fr 1.2fr;
+      gap: 20px;
+      font-size: 10.5px;
+      line-height: 1.65;
+      color: var(--text-muted);
+      transition: background var(--transition), border-color var(--transition), color var(--transition);
+      position: relative;
+      z-index: 2;
+      margin-top: 28px;
+    }
+    .footer p { margin: 0; }
+
+    /* ——— RESPONSIVE ——— */
+    @media (max-width: 700px) {
+      .inner-content { padding: 28px 28px 18px; }
+      .tagline { font-size: 16px; }
+      .grid { grid-template-columns: repeat(3, 1fr); gap: 8px; }
+      .footer { grid-template-columns: 1fr; padding: 18px 28px; }
+    }
+    @media (max-width: 420px) {
+      .grid { grid-template-columns: repeat(2, 1fr); }
+      .tagline { font-size: 14px; }
+    }
+
+    /* ——— ENTRY ANIMATIONS ——— */
+    .card {
+      opacity: 0;
+      transform: translateY(18px) scale(0.96);
+      animation: cardEnter 0.45s ease forwards;
+    }
+    .card:nth-child(1)  { animation-delay: 0.05s; }
+    .card:nth-child(2)  { animation-delay: 0.10s; }
+    .card:nth-child(3)  { animation-delay: 0.15s; }
+    .card:nth-child(4)  { animation-delay: 0.20s; }
+    .card:nth-child(5)  { animation-delay: 0.25s; }
+    .card:nth-child(6)  { animation-delay: 0.30s; }
+    .card:nth-child(7)  { animation-delay: 0.35s; }
+    .card:nth-child(8)  { animation-delay: 0.40s; }
+    .card:nth-child(9)  { animation-delay: 0.45s; }
+    .card:nth-child(10) { animation-delay: 0.50s; }
+    @keyframes cardEnter {
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+  </style>
+</head>
+<body>
+  <div class="console-frame">
+    <div class="inner-content">
+      <button class="theme-toggle" onclick="toggleTheme()">
+        <span id="theme-label">light mode</span>
+      </button>
+
+      <p class="tagline">TinkerTendo is a warehouse converted to a creative maker space in San Francisco.</p>
+
+      <div class="grid">
+
+        <!-- 1: Joystick -->
+        <div class="card" onclick="animateJoystick()">
+          <div class="joystick-wrap">
+            <div class="joystick-stick"></div>
+            <div class="joystick-crossbar"></div>
+            <div class="joystick-head" id="joystick"></div>
+          </div>
+        </div>
+
+        <!-- 2: Logo -->
+        <div class="card" onclick="animateLogo()">
+          <div class="logo-circle" id="logo">
+            <div class="logo-icon">
+              <svg viewBox="0 0 40 32" fill="none">
+                <rect x="8" y="12" width="24" height="18" rx="2" fill="#1a1a1a" opacity="0.7"/>
+                <rect x="14" y="17" width="5" height="7" rx="1" fill="#f5d623" opacity="0.5"/>
+                <rect x="22" y="17" width="5" height="4" rx="1" fill="#f5d623" opacity="0.5"/>
+                <polygon points="20,2 4,14 36,14" fill="#1a1a1a" opacity="0.7"/>
+                <rect x="17" y="5" width="6" height="5" rx="1" fill="#1a1a1a" opacity="0.5"/>
+              </svg>
+            </div>
+            <div class="logo-text">TINKER<br>TENDO</div>
+            <div class="logo-est">EST 2021</div>
+          </div>
+        </div>
+
+        <!-- 3: Button Cluster -->
+        <div class="card" onclick="animateCluster()">
+          <div class="btn-cluster" id="cluster">
+            <div class="cluster-btn"></div>
+            <div class="cluster-btn"></div>
+            <div class="cluster-btn"></div>
+            <div class="cluster-btn"></div>
+          </div>
+        </div>
+
+        <!-- 4: Toggle Switch -->
+        <div class="card" onclick="toggleSwitch1()">
+          <div class="toggle-track" id="toggle1">
+            <div class="toggle-knob">
+              <div class="lines">
+                <span></span><span></span><span></span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 5: Cartridge -->
+        <div class="card" onclick="animateCartridge()">
+          <div class="cartridge" id="cartridge">
+            <div class="cartridge-label"></div>
+          </div>
+        </div>
+
+        <!-- 6: Power Button -->
+        <div class="card" onclick="animatePower()">
+          <div class="power-btn" id="power">
+            <div class="indicator"></div>
+          </div>
+        </div>
+
+        <!-- 7: D-Pad -->
+        <div class="card" onclick="animateDpad()">
+          <div class="dpad" id="dpad">
+            <div class="dpad-h"></div>
+            <div class="dpad-v"></div>
+            <div class="dpad-center"></div>
+          </div>
+        </div>
+
+        <!-- 8: Switch 2 -->
+        <div class="card" onclick="toggleSwitch2()">
+          <div class="switch2-track" id="toggle2">
+            <div class="switch2-knob">
+              <div class="mesh"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 9: Dial -->
+        <div class="card" onclick="animateDial()">
+          <div class="dial-wrap" id="dial">
+            <div class="dial-ring" id="dial-ring"></div>
+            <div class="dial-center"></div>
+          </div>
+        </div>
+
+        <!-- 10: Sliders -->
+        <div class="card" onclick="animateSliders()">
+          <div class="sliders-wrap" id="sliders">
+            <div class="slider-row">
+              <div class="slider-track"><div class="slider-fill" style="width:75%"></div></div>
+              <div class="slider-knob"></div>
+            </div>
+            <div class="slider-row">
+              <div class="slider-track"><div class="slider-fill" style="width:55%"></div></div>
+              <div class="slider-knob"></div>
+            </div>
+            <div class="slider-row">
+              <div class="slider-track"><div class="slider-fill" style="width:90%"></div></div>
+              <div class="slider-knob"></div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="footer">
+      <p>1025 Tennessee St.<br>San Francisco, CA, 94107</p>
+      <p>TinkerTendo is a warehouse converted to a creative maker space in San Francisco. It's a launching point for expeditions and adventures, whether to national parks or Burning Man. Membership is currently by invitation only.</p>
+      <p>The name is inspired by the spirit of tinkering, and Tendo or &#22825;&#36947; in Japanese which can mean "way to heaven," as in Nintendo. The "ten" is also the first part of the address on Tennessee Street.</p>
+    </div>
+  </div>
+
+  <script>
+    /* Theme toggle */
+    function toggleTheme() {
+      const html = document.documentElement;
+      const label = document.getElementById('theme-label');
+      if (html.dataset.theme === 'dark') {
+        html.dataset.theme = 'light';
+        label.textContent = 'dark mode';
+      } else {
+        html.dataset.theme = 'dark';
+        label.textContent = 'light mode';
+      }
+    }
+
+    /* 1: Joystick wiggle */
+    function animateJoystick() {
+      const el = document.getElementById('joystick');
+      el.classList.remove('wiggle');
+      void el.offsetWidth;
+      el.classList.add('wiggle');
+    }
+
+    /* 2: Logo spin */
+    function animateLogo() {
+      const el = document.getElementById('logo');
+      el.classList.remove('spin');
+      void el.offsetWidth;
+      el.classList.add('spin');
+    }
+
+    /* 3: Button cluster pop sequence */
+    function animateCluster() {
+      const btns = document.querySelectorAll('#cluster .cluster-btn');
+      const order = [0, 1, 2, 3].sort(() => Math.random() - 0.5);
+      order.forEach((idx, i) => {
+        setTimeout(() => {
+          btns[idx].classList.add('pop');
+          setTimeout(() => btns[idx].classList.remove('pop'), 300);
+        }, i * 100);
+      });
+    }
+
+    /* 4: Toggle switch 1 */
+    function toggleSwitch1() {
+      document.getElementById('toggle1').classList.toggle('on');
+    }
+
+    /* 5: Cartridge eject */
+    function animateCartridge() {
+      const el = document.getElementById('cartridge');
+      el.classList.remove('eject');
+      void el.offsetWidth;
+      el.classList.add('eject');
+    }
+
+    /* 6: Power button */
+    function animatePower() {
+      const el = document.getElementById('power');
+      el.classList.toggle('active');
+      el.classList.remove('pulse');
+      void el.offsetWidth;
+      el.classList.add('pulse');
+    }
+
+    /* 7: D-Pad */
+    let dpadDir = 0;
+    const dirs = ['pressed-up', 'pressed-right', 'pressed-down', 'pressed-left'];
+    function animateDpad() {
+      const el = document.getElementById('dpad');
+      dirs.forEach(d => el.classList.remove(d));
+      el.classList.add(dirs[dpadDir % 4]);
+      dpadDir++;
+      el.classList.remove('wiggle');
+      void el.offsetWidth;
+      el.classList.add('wiggle');
+      setTimeout(() => dirs.forEach(d => el.classList.remove(d)), 500);
+    }
+
+    /* 8: Toggle switch 2 */
+    function toggleSwitch2() {
+      document.getElementById('toggle2').classList.toggle('on');
+    }
+
+    /* 9: Dial rotation */
+    let dialPos = 0;
+    const dialStops = [
+      'from 180deg, var(--yellow) 0deg, var(--yellow) 100deg, var(--cyan) 100deg, var(--cyan) 360deg',
+      'from 180deg, var(--yellow) 0deg, var(--yellow) 160deg, var(--cyan) 160deg, var(--cyan) 360deg',
+      'from 180deg, var(--yellow) 0deg, var(--yellow) 220deg, var(--cyan) 220deg, var(--cyan) 360deg',
+      'from 180deg, var(--yellow) 0deg, var(--yellow) 60deg, var(--cyan) 60deg, var(--cyan) 360deg',
+    ];
+    function animateDial() {
+      dialPos = (dialPos + 1) % dialStops.length;
+      document.getElementById('dial-ring').style.background =
+        'conic-gradient(' + dialStops[dialPos] + ')';
+    }
+
+    /* 10: Sliders randomize */
+    function animateSliders() {
+      const fills = document.querySelectorAll('#sliders .slider-fill');
+      fills.forEach(fill => {
+        fill.style.width = (Math.floor(Math.random() * 75) + 20) + '%';
+      });
+    }
+  </script>
+</body>
+</html>
