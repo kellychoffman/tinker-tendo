@@ -271,7 +271,7 @@
       width: 52%;
       height: 68%;
       background: var(--cyan);
-      border-radius: 999px;
+      border-radius: 24%;
       position: relative;
       cursor: pointer;
     }
@@ -361,10 +361,10 @@
        CARD 6 — POWER BUTTON
        ========================================================= */
     .power-btn {
-      width: 48%;
+      width: 45%;
       height: 66%;
       background: var(--cyan);
-      border-radius: 10%;
+      border-radius: 12%;
       position: relative;
       box-shadow: 0 2px 5px rgba(0,0,0,0.25);
     }
@@ -429,7 +429,7 @@
       width: 52%;
       height: 68%;
       background: var(--cyan);
-      border-radius: 999px;
+      border-radius: 24%;
       position: relative;
       cursor: pointer;
     }
@@ -517,24 +517,24 @@
        CARD 10 — SLIDERS
        ========================================================= */
     .sliders-wrap {
-      width: 70%;
+      width: 74%;
       height: 52%;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
     }
     .slider-row {
+      position: relative;
+      height: 28%;
       display: flex;
       align-items: center;
-      height: 28%;
     }
     .slider-track {
-      flex: 1;
+      position: absolute;
+      left: 0;
       height: 3px;
       background: var(--text-muted);
       border-radius: 2px;
-      position: relative;
-      margin-right: 6px;
     }
     .slider-fill {
       position: absolute;
@@ -545,15 +545,16 @@
       transition: width 0.4s ease;
     }
     .slider-knob {
+      position: absolute;
       width: 14px;
       height: 14px;
       background: var(--cyan);
       border-radius: 50%;
       box-shadow: 0 1px 3px rgba(0,0,0,0.3);
-      flex-shrink: 0;
       transition: transform 0.15s ease;
+      transform: translateX(-50%);
     }
-    .slider-knob:hover { transform: scale(1.2); }
+    .slider-knob:hover { transform: translateX(-50%) scale(1.2); }
 
     /* ——— FOOTER ——— */
     .footer {
@@ -708,16 +709,16 @@
         <div class="card" onclick="animateSliders()">
           <div class="sliders-wrap" id="sliders">
             <div class="slider-row">
-              <div class="slider-track"><div class="slider-fill" style="width:70%"></div></div>
-              <div class="slider-knob"></div>
+              <div class="slider-track" style="width:88%"><div class="slider-fill" style="width:75%"></div></div>
+              <div class="slider-knob" style="left:66%"></div>
             </div>
             <div class="slider-row">
-              <div class="slider-track"><div class="slider-fill" style="width:50%"></div></div>
-              <div class="slider-knob"></div>
+              <div class="slider-track" style="width:92%"><div class="slider-fill" style="width:60%"></div></div>
+              <div class="slider-knob" style="left:55%"></div>
             </div>
             <div class="slider-row">
-              <div class="slider-track"><div class="slider-fill" style="width:85%"></div></div>
-              <div class="slider-knob"></div>
+              <div class="slider-track" style="width:80%"><div class="slider-fill" style="width:90%"></div></div>
+              <div class="slider-knob" style="left:72%"></div>
             </div>
           </div>
         </div>
@@ -833,9 +834,13 @@
     }
 
     function animateSliders() {
-      const fills = document.querySelectorAll('#sliders .slider-fill');
-      fills.forEach(fill => {
-        fill.style.width = (Math.floor(Math.random() * 75) + 20) + '%';
+      const rows = document.querySelectorAll('#sliders .slider-row');
+      rows.forEach(row => {
+        const pos = Math.floor(Math.random() * 60) + 25;
+        const fill = row.querySelector('.slider-fill');
+        const knob = row.querySelector('.slider-knob');
+        if (fill) fill.style.width = pos + '%';
+        if (knob) knob.style.left = pos + '%';
       });
     }
   </script>
