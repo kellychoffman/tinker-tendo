@@ -1,847 +1,263 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="dark">
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>TinkerTendo</title>
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&display=swap');
-
     * { margin: 0; padding: 0; box-sizing: border-box; }
 
-    :root {
-      --cyan: #2ee8d5;
-      --yellow: #f5d623;
-      --transition: 0.4s ease;
-    }
-
-    /* ——— DARK THEME (default) ——— */
-    [data-theme="dark"] {
-      --bg: #141414;
-      --surface: #222;
-      --surface-border: #333;
-      --text: #d0d0d0;
-      --text-muted: #777;
-      --frame-bg: #141414;
-      --frame-border: #333;
-      --card-shadow: inset 0 1px 0 rgba(255,255,255,0.04), inset 0 0 0 1px rgba(255,255,255,0.02), 0 2px 8px rgba(0,0,0,0.5);
-      --dot-color: #444;
-      --footer-bg: #1a1a1a;
-      --footer-border: #2a2a2a;
-    }
-
-    /* ——— LIGHT THEME ——— */
-    [data-theme="light"] {
-      --bg: #f7f2ea;
-      --surface: #ffffff;
-      --surface-border: #ccc5b8;
-      --text: #2a2a2a;
-      --text-muted: #666;
-      --frame-bg: #f7f2ea;
-      --frame-border: #c5beb2;
-      --card-shadow: 0 1px 3px rgba(0,0,0,0.06);
-      --dot-color: #c5beb2;
-      --footer-bg: #ede8df;
-      --footer-border: #d5cec2;
-    }
-
     body {
-      background: var(--bg);
-      color: var(--text);
-      font-family: 'Space Mono', monospace;
-      transition: background var(--transition), color var(--transition);
-      min-height: 100vh;
+      background: #141414;
       display: flex;
       justify-content: center;
       align-items: flex-start;
-      padding: 20px 16px;
+      min-height: 100vh;
+      padding: 0;
+      transition: background 0.4s ease;
     }
+    body.light { background: #f7f2ea; }
 
-    /* ——— CONSOLE FRAME ——— */
-    .console-frame {
-      max-width: 780px;
+    .page-wrap {
+      position: relative;
       width: 100%;
-      background: var(--frame-bg);
-      border: 2px solid var(--frame-border);
-      border-radius: 14px;
-      position: relative;
-      overflow: hidden;
-      transition: background var(--transition), border-color var(--transition);
+      max-width: 1440px;
     }
 
-    /* Film-strip edge dashes */
-    .console-frame::before,
-    .console-frame::after {
-      content: '';
-      position: absolute;
-      top: 12px;
-      bottom: 12px;
-      width: 5px;
-      z-index: 1;
-      background: repeating-linear-gradient(
-        to bottom,
-        var(--dot-color) 0px,
-        var(--dot-color) 5px,
-        transparent 5px,
-        transparent 14px
-      );
-      transition: background var(--transition);
+    /* The original design image — this IS the visual */
+    .page-bg {
+      display: block;
+      width: 100%;
+      height: auto;
+      transition: opacity 0.3s ease;
     }
-    .console-frame::before { left: 9px; }
-    .console-frame::after { right: 9px; }
+    .page-bg.hidden { display: none; }
 
-    .inner-content {
-      padding: 32px 38px 24px;
-      position: relative;
-      z-index: 2;
-    }
-
-    /* Theme toggle */
+    /* Theme toggle button floating on top */
     .theme-toggle {
       position: absolute;
-      top: 12px;
-      right: 38px;
-      z-index: 10;
+      top: 3.8%;
+      right: 7%;
+      z-index: 20;
       cursor: pointer;
-      background: var(--surface);
-      border: 1px solid var(--surface-border);
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.15);
       border-radius: 20px;
-      padding: 4px 12px;
-      color: var(--text-muted);
-      font-family: 'Space Mono', monospace;
+      padding: 4px 14px;
+      color: rgba(255,255,255,0.5);
+      font-family: 'Space Mono', monospace, monospace;
       font-size: 10px;
-      transition: all var(--transition);
+      transition: all 0.3s ease;
       letter-spacing: 0.5px;
     }
-    .theme-toggle:hover { border-color: var(--cyan); color: var(--text); }
-
-    /* Tagline */
-    .tagline {
-      font-size: 20px;
-      font-weight: 700;
-      line-height: 1.45;
-      margin-bottom: 24px;
-      max-width: 520px;
+    .theme-toggle:hover { border-color: #2ee8d5; color: #fff; }
+    body.light .theme-toggle {
+      background: rgba(0,0,0,0.04);
+      border-color: rgba(0,0,0,0.15);
+      color: rgba(0,0,0,0.4);
     }
+    body.light .theme-toggle:hover { border-color: #2ee8d5; color: #000; }
 
-    /* ——— GRID ——— */
-    .grid {
+    /* Invisible click grid overlay */
+    .click-grid {
+      position: absolute;
+      /* Grid area within the image — these percentages map to the card grid */
+      top: 25.6%;
+      left: 1.5%;
+      width: 97%;
+      height: 41.5%;
       display: grid;
       grid-template-columns: repeat(5, 1fr);
-      gap: 10px;
+      grid-template-rows: repeat(2, 1fr);
+      gap: 1.1% 1.1%;
+      z-index: 10;
     }
 
-    .card {
-      background: var(--surface);
-      border: 1px solid var(--surface-border);
-      border-radius: 10px;
-      aspect-ratio: 1;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+    .click-card {
       cursor: pointer;
+      border-radius: 8px;
       position: relative;
-      overflow: hidden;
-      box-shadow: var(--card-shadow);
-      transition: background var(--transition), border-color var(--transition), box-shadow var(--transition), transform 0.15s ease;
-      user-select: none;
-      -webkit-user-select: none;
+      transition: transform 0.15s ease;
     }
-    .card:hover { transform: scale(1.03); border-color: var(--cyan); }
-    .card:active { transform: scale(0.97); }
-
-    /* =========================================================
-       CARD 1 — JOYSTICK
-       ========================================================= */
-    .joystick-wrap {
-      width: 50%;
-      height: 75%;
-      position: relative;
+    .click-card:hover {
+      transform: scale(1.03);
     }
-    .joystick-stick {
-      position: absolute;
-      width: 2px;
-      height: 50%;
-      bottom: 16%;
-      left: 50%;
-      transform: translateX(-50%);
-      background: var(--text-muted);
-    }
-    .joystick-crossbar {
-      position: absolute;
-      width: 60%;
-      height: 2px;
-      bottom: 16%;
-      left: 20%;
-      background: var(--text-muted);
-    }
-    .joystick-head {
-      position: absolute;
-      top: 12%;
-      left: 50%;
-      transform: translate(-50%, 0);
-      width: 26px;
-      height: 22px;
-      background: var(--yellow);
-      border-radius: 4px;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.3);
-    }
-    .joystick-head.wiggle { animation: joystickWiggle 0.6s ease; }
-    @keyframes joystickWiggle {
-      0%   { transform: translate(-50%, 0) rotate(0deg); }
-      20%  { transform: translate(-40%, -6px) rotate(10deg); }
-      40%  { transform: translate(-60%, 4px) rotate(-8deg); }
-      60%  { transform: translate(-45%, -3px) rotate(5deg); }
-      80%  { transform: translate(-55%, 2px) rotate(-3deg); }
-      100% { transform: translate(-50%, 0) rotate(0deg); }
+    .click-card:active {
+      transform: scale(0.97);
     }
 
-    /* =========================================================
-       CARD 2 — LOGO
-       ========================================================= */
-    .logo-circle {
-      width: 80%;
-      height: 80%;
-      background: var(--yellow);
-      border-radius: 50%;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      transition: transform 0.3s ease;
+    /* Animation flash overlay on click */
+    .click-card::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: 8px;
+      background: rgba(46, 232, 213, 0);
+      transition: background 0.15s ease;
+      pointer-events: none;
     }
-    .logo-icon {
-      width: 26px;
-      height: 20px;
-      margin-bottom: 2px;
+    .click-card.flash::after {
+      animation: cardFlash 0.4s ease;
     }
-    .logo-icon svg { width: 100%; height: 100%; }
-    .logo-text {
-      font-weight: 700;
-      font-size: 11px;
-      color: #1a1a1a;
-      line-height: 1.1;
-      text-align: center;
-      letter-spacing: 1.5px;
-    }
-    .logo-est {
-      font-size: 7px;
-      color: #777;
-      margin-top: 1px;
-      letter-spacing: 2px;
-    }
-    .logo-circle.spin { animation: logoSpin 0.8s ease; }
-    @keyframes logoSpin {
-      0%   { transform: rotate(0deg) scale(1); }
-      50%  { transform: rotate(180deg) scale(1.1); }
-      100% { transform: rotate(360deg) scale(1); }
+    @keyframes cardFlash {
+      0%   { background: rgba(46, 232, 213, 0.15); }
+      100% { background: rgba(46, 232, 213, 0); }
     }
 
-    /* =========================================================
-       CARD 3 — BUTTON CLUSTER
-       ========================================================= */
-    .btn-cluster {
-      width: 54%;
-      height: 54%;
-      position: relative;
+    /* Wiggle animation for joystick, dpad */
+    .click-card.wiggle {
+      animation: wiggle 0.5s ease;
     }
-    .cluster-btn {
-      position: absolute;
-      width: 30%;
-      height: 30%;
-      background: var(--cyan);
-      border-radius: 50%;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.25);
-    }
-    .cluster-btn.pop { animation: btnPop 0.3s ease; }
-    @keyframes btnPop {
-      0%   { transform: scale(1); }
-      50%  { transform: scale(1.3); }
-      100% { transform: scale(1); }
-    }
-    .cluster-btn:nth-child(1) { top: 0; left: 50%; transform: translateX(-50%); }
-    .cluster-btn:nth-child(2) { bottom: 0; left: 50%; transform: translateX(-50%); }
-    .cluster-btn:nth-child(3) { top: 50%; left: 0; transform: translateY(-50%); }
-    .cluster-btn:nth-child(4) { top: 50%; right: 0; transform: translateY(-50%); }
-
-    /* =========================================================
-       CARD 4 — TOGGLE SWITCH (big track, lines on knob)
-       ========================================================= */
-    .toggle-track {
-      width: 52%;
-      height: 68%;
-      background: var(--cyan);
-      border-radius: 24%;
-      position: relative;
-      cursor: pointer;
-    }
-    .toggle-knob {
-      position: absolute;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 82%;
-      height: 42%;
-      background: var(--yellow);
-      border-radius: 20%;
-      top: 5%;
-      transition: top 0.3s cubic-bezier(0.68, -0.3, 0.32, 1.3);
-      box-shadow: 0 2px 5px rgba(0,0,0,0.25);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-    .toggle-knob .lines {
-      width: 50%;
-      display: flex;
-      flex-direction: column;
-      gap: 3px;
-    }
-    .toggle-knob .lines span {
-      display: block;
-      height: 2px;
-      background: rgba(0,0,0,0.18);
-      border-radius: 1px;
-    }
-    .toggle-track.on .toggle-knob {
-      top: 53%;
-    }
-
-    /* =========================================================
-       CARD 5 — CARTRIDGE (wide yellow rect with grooves)
-       ========================================================= */
-    .cartridge {
-      width: 60%;
-      height: 42%;
-      background: var(--yellow);
-      border-radius: 8%;
-      position: relative;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.25);
-    }
-    .cartridge-label {
-      position: absolute;
-      top: 12%; left: 10%; right: 10%; bottom: 25%;
-      border-radius: 4%;
-      transition: background 0.3s ease;
-    }
-    .cartridge-label.texture-lines {
-      background: repeating-linear-gradient(
-        0deg,
-        rgba(0,0,0,0.08) 0px, rgba(0,0,0,0.08) 2px,
-        transparent 2px, transparent 5px
-      );
-    }
-    .cartridge-label.texture-cross {
-      background: repeating-linear-gradient(
-        -45deg,
-        rgba(0,0,0,0.06) 0px, rgba(0,0,0,0.06) 2px,
-        transparent 2px, transparent 5px
-      ),
-      repeating-linear-gradient(
-        45deg,
-        rgba(0,0,0,0.06) 0px, rgba(0,0,0,0.06) 2px,
-        transparent 2px, transparent 5px
-      );
-    }
-    .cartridge-label.texture-diagonal {
-      background: repeating-linear-gradient(
-        -45deg,
-        rgba(0,0,0,0.09) 0px, rgba(0,0,0,0.09) 2px,
-        transparent 2px, transparent 5px
-      );
-    }
-    .cartridge.eject { animation: cartridgeEject 0.6s ease; }
-    @keyframes cartridgeEject {
-      0%   { transform: translateY(0); }
-      30%  { transform: translateY(-20px); }
-      60%  { transform: translateY(-18px) rotate(3deg); }
-      100% { transform: translateY(0) rotate(0deg); }
-    }
-
-    /* =========================================================
-       CARD 6 — POWER BUTTON
-       ========================================================= */
-    .power-btn {
-      width: 45%;
-      height: 66%;
-      background: var(--cyan);
-      border-radius: 12%;
-      position: relative;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.25);
-    }
-    .power-btn .indicator {
-      position: absolute;
-      top: 12%;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 10%;
-      height: 0;
-      padding-bottom: 10%;
-      background: var(--yellow);
-      border-radius: 50%;
-      transition: box-shadow 0.3s ease;
-    }
-    .power-btn.active .indicator {
-      box-shadow: 0 0 10px 4px rgba(245, 214, 35, 0.5);
-    }
-    .power-btn.pulse .indicator { animation: powerPulse 0.6s ease; }
-    @keyframes powerPulse {
-      0%   { box-shadow: 0 0 0 0 rgba(245, 214, 35, 0.8); }
-      100% { box-shadow: 0 0 20px 10px rgba(245, 214, 35, 0); }
-    }
-
-    /* =========================================================
-       CARD 7 — D-PAD
-       ========================================================= */
-    .dpad {
-      width: 56%;
-      height: 56%;
-      position: relative;
-    }
-    .dpad-h, .dpad-v {
-      position: absolute;
-      background: var(--cyan);
-      border-radius: 6%;
-    }
-    .dpad-h { width: 100%; height: 34%; top: 33%; left: 0; }
-    .dpad-v { width: 34%; height: 100%; top: 0; left: 33%; }
-    .dpad-center {
-      position: absolute;
-      width: 34%; height: 34%; top: 33%; left: 33%;
-      background: var(--cyan); z-index: 1;
-    }
-    .dpad.pressed-up .dpad-v    { background: #22cfc0; }
-    .dpad.pressed-down .dpad-v  { background: #22cfc0; }
-    .dpad.pressed-left .dpad-h  { background: #22cfc0; }
-    .dpad.pressed-right .dpad-h { background: #22cfc0; }
-    .dpad.wiggle { animation: dpadWiggle 0.5s ease; }
-    @keyframes dpadWiggle {
+    @keyframes wiggle {
       0%   { transform: rotate(0); }
-      25%  { transform: rotate(6deg); }
-      50%  { transform: rotate(-6deg); }
-      75%  { transform: rotate(3deg); }
+      20%  { transform: rotate(4deg); }
+      40%  { transform: rotate(-4deg); }
+      60%  { transform: rotate(3deg); }
+      80%  { transform: rotate(-2deg); }
       100% { transform: rotate(0); }
     }
 
-    /* =========================================================
-       CARD 8 — SWITCH 2 (same size as toggle, mesh on knob)
-       ========================================================= */
-    .switch2-track {
-      width: 52%;
-      height: 68%;
-      background: var(--cyan);
-      border-radius: 24%;
-      position: relative;
-      cursor: pointer;
+    /* Spin for logo */
+    .click-card.spin {
+      animation: spin 0.7s ease;
     }
-    .switch2-knob {
-      position: absolute;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 82%;
-      height: 42%;
-      background: var(--yellow);
-      border-radius: 20%;
-      top: 5%;
-      transition: top 0.3s cubic-bezier(0.68, -0.3, 0.32, 1.3);
-      box-shadow: 0 2px 5px rgba(0,0,0,0.25);
-      overflow: hidden;
-    }
-    .switch2-knob .mesh {
-      position: absolute;
-      top: 8%; left: 8%; right: 8%; bottom: 8%;
-      border-radius: 12%;
-    }
-    /* Texture states for switch 2 knob */
-    .switch2-knob .mesh.texture-lines {
-      background: repeating-linear-gradient(
-        0deg,
-        rgba(0,0,0,0.1) 0px, rgba(0,0,0,0.1) 2px,
-        transparent 2px, transparent 5px
-      );
-    }
-    .switch2-knob .mesh.texture-cross {
-      background: repeating-linear-gradient(
-        -45deg,
-        rgba(0,0,0,0.08) 0px, rgba(0,0,0,0.08) 2px,
-        transparent 2px, transparent 5px
-      ),
-      repeating-linear-gradient(
-        45deg,
-        rgba(0,0,0,0.08) 0px, rgba(0,0,0,0.08) 2px,
-        transparent 2px, transparent 5px
-      );
-    }
-    .switch2-knob .mesh.texture-diagonal {
-      background: repeating-linear-gradient(
-        -45deg,
-        rgba(0,0,0,0.1) 0px, rgba(0,0,0,0.1) 2px,
-        transparent 2px, transparent 5px
-      );
-    }
-    .switch2-track.on .switch2-knob {
-      top: 53%;
+    @keyframes spin {
+      0%   { transform: rotate(0deg) scale(1); }
+      50%  { transform: rotate(180deg) scale(1.05); }
+      100% { transform: rotate(360deg) scale(1); }
     }
 
-    /* =========================================================
-       CARD 9 — DIAL (big thick donut, cyan + yellow)
-       ========================================================= */
-    .dial-wrap {
-      width: 68%;
-      height: 68%;
-      position: relative;
+    /* Bounce for cartridge, power, buttons */
+    .click-card.bounce {
+      animation: bounce 0.4s ease;
     }
-    .dial-ring {
-      width: 100%;
-      height: 100%;
-      border-radius: 50%;
-      background: conic-gradient(
-        from 180deg,
-        var(--yellow) 0deg,
-        var(--yellow) 100deg,
-        var(--cyan) 100deg,
-        var(--cyan) 360deg
-      );
-    }
-    .dial-center {
-      position: absolute;
-      top: 50%; left: 50%;
-      transform: translate(-50%, -50%);
-      width: 40%;
-      height: 40%;
-      background: var(--surface);
-      border-radius: 50%;
-      transition: background var(--transition);
+    @keyframes bounce {
+      0%   { transform: translateY(0); }
+      30%  { transform: translateY(-8px); }
+      60%  { transform: translateY(2px); }
+      100% { transform: translateY(0); }
     }
 
-    /* =========================================================
-       CARD 10 — SLIDERS
-       ========================================================= */
-    .sliders-wrap {
-      width: 74%;
-      height: 52%;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
+    /* Pulse for power */
+    .click-card.pulse {
+      animation: pulse 0.5s ease;
     }
-    .slider-row {
-      position: relative;
-      height: 28%;
-      display: flex;
-      align-items: center;
-    }
-    .slider-track {
-      position: absolute;
-      left: 0;
-      height: 3px;
-      background: var(--text-muted);
-      border-radius: 2px;
-    }
-    .slider-fill {
-      position: absolute;
-      left: 0; top: 0;
-      height: 100%;
-      background: var(--cyan);
-      border-radius: 2px;
-      transition: width 0.4s ease;
-    }
-    .slider-knob {
-      position: absolute;
-      width: 14px;
-      height: 14px;
-      background: var(--cyan);
-      border-radius: 50%;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.3);
-      transition: transform 0.15s ease;
-      transform: translateX(-50%);
-    }
-    .slider-knob:hover { transform: translateX(-50%) scale(1.2); }
-
-    /* ——— FOOTER ——— */
-    .footer {
-      background: var(--footer-bg);
-      border-top: 1px solid var(--footer-border);
-      padding: 20px 38px 24px;
-      display: grid;
-      grid-template-columns: 1fr 1.3fr 1.3fr;
-      gap: 18px;
-      font-size: 10px;
-      line-height: 1.65;
-      color: var(--text-muted);
-      transition: background var(--transition), border-color var(--transition), color var(--transition);
-      position: relative;
-      z-index: 2;
-      margin-top: 24px;
-    }
-    .footer p { margin: 0; }
-
-    /* ——— RESPONSIVE ——— */
-    @media (max-width: 700px) {
-      .inner-content { padding: 24px 24px 16px; }
-      .tagline { font-size: 16px; }
-      .grid { grid-template-columns: repeat(3, 1fr); gap: 8px; }
-      .footer { grid-template-columns: 1fr; padding: 16px 24px; }
-    }
-    @media (max-width: 420px) {
-      .grid { grid-template-columns: repeat(2, 1fr); }
-      .tagline { font-size: 14px; }
+    @keyframes pulse {
+      0%   { transform: scale(1); box-shadow: 0 0 0 0 rgba(245, 214, 35, 0.4); }
+      50%  { transform: scale(1.05); box-shadow: 0 0 20px 8px rgba(245, 214, 35, 0.2); }
+      100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(245, 214, 35, 0); }
     }
 
-    /* ——— ENTRY ANIMATIONS ——— */
-    .card {
+    /* Card state overlays — shows region from alternate dark mode images */
+    .card-state-overlay {
+      position: absolute;
+      inset: 0;
+      border-radius: 8px;
+      background-size: cover;
+      pointer-events: none;
+      z-index: 5;
       opacity: 0;
-      transform: translateY(16px) scale(0.96);
-      animation: cardEnter 0.4s ease forwards;
+      transition: opacity 0.25s ease;
     }
-    .card:nth-child(1)  { animation-delay: 0.05s; }
-    .card:nth-child(2)  { animation-delay: 0.10s; }
-    .card:nth-child(3)  { animation-delay: 0.15s; }
-    .card:nth-child(4)  { animation-delay: 0.20s; }
-    .card:nth-child(5)  { animation-delay: 0.25s; }
-    .card:nth-child(6)  { animation-delay: 0.30s; }
-    .card:nth-child(7)  { animation-delay: 0.35s; }
-    .card:nth-child(8)  { animation-delay: 0.40s; }
-    .card:nth-child(9)  { animation-delay: 0.45s; }
-    .card:nth-child(10) { animation-delay: 0.50s; }
-    @keyframes cardEnter {
-      to { opacity: 1; transform: translateY(0) scale(1); }
+    .card-state-overlay.active {
+      opacity: 1;
+    }
+
+    /* Entry animation */
+    .click-card {
+      opacity: 0;
+      transform: translateY(10px);
+      animation: enterCard 0.4s ease forwards;
+    }
+    .click-card:nth-child(1)  { animation-delay: 0.05s; }
+    .click-card:nth-child(2)  { animation-delay: 0.10s; }
+    .click-card:nth-child(3)  { animation-delay: 0.15s; }
+    .click-card:nth-child(4)  { animation-delay: 0.20s; }
+    .click-card:nth-child(5)  { animation-delay: 0.25s; }
+    .click-card:nth-child(6)  { animation-delay: 0.30s; }
+    .click-card:nth-child(7)  { animation-delay: 0.35s; }
+    .click-card:nth-child(8)  { animation-delay: 0.40s; }
+    .click-card:nth-child(9)  { animation-delay: 0.45s; }
+    .click-card:nth-child(10) { animation-delay: 0.50s; }
+    @keyframes enterCard {
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @media (max-width: 700px) {
+      .theme-toggle { font-size: 8px; padding: 3px 10px; }
     }
   </style>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono&display=swap" rel="stylesheet">
 </head>
 <body>
-  <div class="console-frame">
-    <div class="inner-content">
-      <button class="theme-toggle" onclick="toggleTheme()">
-        <span id="theme-label">light mode</span>
-      </button>
+  <div class="page-wrap">
+    <!-- The original design images — pixel-perfect -->
+    <img id="img-dark1" class="page-bg" src="dark%20mode1.png" alt="TinkerTendo">
+    <img id="img-dark2" class="page-bg hidden" src="dark%20mode2.png" alt="TinkerTendo">
+    <img id="img-dark3" class="page-bg hidden" src="dark%20mode3.png" alt="TinkerTendo">
+    <img id="img-light" class="page-bg hidden" src="tinker-light.png" alt="TinkerTendo">
 
-      <p class="tagline">TinkerTendo is a warehouse converted to a creative maker space in San Francisco.</p>
+    <!-- Theme toggle -->
+    <button class="theme-toggle" id="themeBtn" onclick="toggleTheme()">
+      <span id="theme-label">light mode</span>
+    </button>
 
-      <div class="grid">
-
-        <!-- 1: Joystick -->
-        <div class="card" onclick="animateJoystick()">
-          <div class="joystick-wrap">
-            <div class="joystick-stick"></div>
-            <div class="joystick-crossbar"></div>
-            <div class="joystick-head" id="joystick"></div>
-          </div>
-        </div>
-
-        <!-- 2: Logo -->
-        <div class="card" onclick="animateLogo()">
-          <div class="logo-circle" id="logo">
-            <div class="logo-icon">
-              <svg viewBox="0 0 36 28" fill="none">
-                <rect x="6" y="10" width="24" height="16" rx="2" fill="#1a1a1a" opacity="0.65"/>
-                <rect x="11" y="14" width="5" height="7" rx="1" fill="#f5d623" opacity="0.4"/>
-                <rect x="19" y="14" width="5" height="4" rx="1" fill="#f5d623" opacity="0.4"/>
-                <polygon points="18,1 3,12 33,12" fill="#1a1a1a" opacity="0.65"/>
-                <rect x="15" y="3" width="6" height="5" rx="1" fill="#1a1a1a" opacity="0.45"/>
-              </svg>
-            </div>
-            <div class="logo-text">TINKER<br>TENDO</div>
-            <div class="logo-est">EST 2021</div>
-          </div>
-        </div>
-
-        <!-- 3: Button Cluster -->
-        <div class="card" onclick="animateCluster()">
-          <div class="btn-cluster" id="cluster">
-            <div class="cluster-btn"></div>
-            <div class="cluster-btn"></div>
-            <div class="cluster-btn"></div>
-            <div class="cluster-btn"></div>
-          </div>
-        </div>
-
-        <!-- 4: Toggle Switch -->
-        <div class="card" onclick="toggleSwitch1()">
-          <div class="toggle-track" id="toggle1">
-            <div class="toggle-knob">
-              <div class="lines">
-                <span></span><span></span><span></span>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- 5: Cartridge -->
-        <div class="card" onclick="animateCartridge()">
-          <div class="cartridge" id="cartridge">
-            <div class="cartridge-label texture-lines" id="cartridge-label"></div>
-          </div>
-        </div>
-
-        <!-- 6: Power Button -->
-        <div class="card" onclick="animatePower()">
-          <div class="power-btn" id="power">
-            <div class="indicator"></div>
-          </div>
-        </div>
-
-        <!-- 7: D-Pad -->
-        <div class="card" onclick="animateDpad()">
-          <div class="dpad" id="dpad">
-            <div class="dpad-h"></div>
-            <div class="dpad-v"></div>
-            <div class="dpad-center"></div>
-          </div>
-        </div>
-
-        <!-- 8: Switch 2 -->
-        <div class="card" onclick="toggleSwitch2()">
-          <div class="switch2-track" id="toggle2">
-            <div class="switch2-knob">
-              <div class="mesh texture-lines" id="switch2-mesh"></div>
-            </div>
-          </div>
-        </div>
-
-        <!-- 9: Dial -->
-        <div class="card" onclick="animateDial()">
-          <div class="dial-wrap" id="dial">
-            <div class="dial-ring" id="dial-ring"></div>
-            <div class="dial-center"></div>
-          </div>
-        </div>
-
-        <!-- 10: Sliders -->
-        <div class="card" onclick="animateSliders()">
-          <div class="sliders-wrap" id="sliders">
-            <div class="slider-row">
-              <div class="slider-track" style="width:88%"><div class="slider-fill" style="width:75%"></div></div>
-              <div class="slider-knob" style="left:66%"></div>
-            </div>
-            <div class="slider-row">
-              <div class="slider-track" style="width:92%"><div class="slider-fill" style="width:60%"></div></div>
-              <div class="slider-knob" style="left:55%"></div>
-            </div>
-            <div class="slider-row">
-              <div class="slider-track" style="width:80%"><div class="slider-fill" style="width:90%"></div></div>
-              <div class="slider-knob" style="left:72%"></div>
-            </div>
-          </div>
-        </div>
-
-      </div>
-    </div>
-
-    <div class="footer">
-      <p>1025 Tennessee St.<br>San Francisco, CA, 94107</p>
-      <p>TinkerTendo is a warehouse converted to a creative maker space in San Francisco. It's a launching point for expeditions and adventures, whether to national parks or Burning Man. Membership is currently by invitation only.</p>
-      <p>The name is inspired by the spirit of tinkering, and Tendo or &#22825;&#36947; in Japanese which can mean "way to heaven," as in Nintendo. The "ten" is also the first part of the address on Tennessee Street.</p>
+    <!-- Invisible click areas over each card -->
+    <div class="click-grid">
+      <div class="click-card" data-card="0" data-anim="wiggle" onclick="animateCard(this)"></div>
+      <div class="click-card" data-card="1" data-anim="spin" onclick="animateCard(this)"></div>
+      <div class="click-card" data-card="2" data-anim="flash" onclick="animateCard(this)"></div>
+      <div class="click-card" data-card="3" data-anim="flash" onclick="animateCard(this)"></div>
+      <div class="click-card" data-card="4" data-anim="bounce" onclick="animateCard(this)"></div>
+      <div class="click-card" data-card="5" data-anim="pulse" onclick="animateCard(this)"></div>
+      <div class="click-card" data-card="6" data-anim="wiggle" onclick="animateCard(this)"></div>
+      <div class="click-card" data-card="7" data-anim="flash" onclick="animateCard(this)"></div>
+      <div class="click-card" data-card="8" data-anim="flash" onclick="animateCard(this)"></div>
+      <div class="click-card" data-card="9" data-anim="flash" onclick="animateCard(this)"></div>
     </div>
   </div>
 
   <script>
+    let isDark = true;
+
+    // Dark mode state cycling: rotate through 3 dark images
+    const darkImages = ['img-dark1', 'img-dark2', 'img-dark3'];
+    let darkState = 0;
+
     function toggleTheme() {
-      const html = document.documentElement;
+      isDark = !isDark;
       const label = document.getElementById('theme-label');
-      if (html.dataset.theme === 'dark') {
-        html.dataset.theme = 'light';
-        label.textContent = 'dark mode';
-      } else {
-        html.dataset.theme = 'dark';
+      document.body.classList.toggle('light', !isDark);
+
+      // Hide all images
+      document.querySelectorAll('.page-bg').forEach(img => img.classList.add('hidden'));
+
+      if (isDark) {
+        document.getElementById(darkImages[darkState]).classList.remove('hidden');
         label.textContent = 'light mode';
+      } else {
+        document.getElementById('img-light').classList.remove('hidden');
+        label.textContent = 'dark mode';
       }
     }
 
-    function animateJoystick() {
-      const el = document.getElementById('joystick');
-      el.classList.remove('wiggle');
-      void el.offsetWidth;
-      el.classList.add('wiggle');
-    }
+    function animateCard(el) {
+      const anim = el.dataset.anim;
 
-    function animateLogo() {
-      const el = document.getElementById('logo');
-      el.classList.remove('spin');
-      void el.offsetWidth;
-      el.classList.add('spin');
-    }
+      // Remove any existing animation
+      el.classList.remove('wiggle', 'spin', 'bounce', 'pulse', 'flash');
+      void el.offsetWidth; // force reflow
 
-    function animateCluster() {
-      const btns = document.querySelectorAll('#cluster .cluster-btn');
-      const order = [0, 1, 2, 3].sort(() => Math.random() - 0.5);
-      order.forEach((idx, i) => {
-        setTimeout(() => {
-          btns[idx].classList.add('pop');
-          setTimeout(() => btns[idx].classList.remove('pop'), 300);
-        }, i * 100);
-      });
-    }
+      // Apply animation
+      el.classList.add(anim);
+      setTimeout(() => el.classList.remove(anim), 600);
 
-    function toggleSwitch1() {
-      document.getElementById('toggle1').classList.toggle('on');
-    }
-
-    const textures = ['texture-lines', 'texture-cross', 'texture-diagonal'];
-    let cartridgeTex = 0;
-    function animateCartridge() {
-      const el = document.getElementById('cartridge');
-      el.classList.remove('eject');
-      void el.offsetWidth;
-      el.classList.add('eject');
-      // cycle cartridge label texture
-      cartridgeTex = (cartridgeTex + 1) % textures.length;
-      const label = document.getElementById('cartridge-label');
-      textures.forEach(t => label.classList.remove(t));
-      label.classList.add(textures[cartridgeTex]);
-    }
-
-    function animatePower() {
-      const el = document.getElementById('power');
-      el.classList.toggle('active');
-      el.classList.remove('pulse');
-      void el.offsetWidth;
-      el.classList.add('pulse');
-    }
-
-    let dpadDir = 0;
-    const dirs = ['pressed-up', 'pressed-right', 'pressed-down', 'pressed-left'];
-    function animateDpad() {
-      const el = document.getElementById('dpad');
-      dirs.forEach(d => el.classList.remove(d));
-      el.classList.add(dirs[dpadDir % 4]);
-      dpadDir++;
-      el.classList.remove('wiggle');
-      void el.offsetWidth;
-      el.classList.add('wiggle');
-      setTimeout(() => dirs.forEach(d => el.classList.remove(d)), 500);
-    }
-
-    let switch2Tex = 0;
-    function toggleSwitch2() {
-      document.getElementById('toggle2').classList.toggle('on');
-      // cycle switch 2 knob texture
-      switch2Tex = (switch2Tex + 1) % textures.length;
-      const mesh = document.getElementById('switch2-mesh');
-      textures.forEach(t => mesh.classList.remove(t));
-      mesh.classList.add(textures[switch2Tex]);
-    }
-
-    let dialPos = 0;
-    const dialStops = [
-      'from 180deg, var(--yellow) 0deg, var(--yellow) 100deg, var(--cyan) 100deg, var(--cyan) 360deg',
-      'from 180deg, var(--yellow) 0deg, var(--yellow) 160deg, var(--cyan) 160deg, var(--cyan) 360deg',
-      'from 180deg, var(--yellow) 0deg, var(--yellow) 220deg, var(--cyan) 220deg, var(--cyan) 360deg',
-      'from 180deg, var(--yellow) 0deg, var(--yellow) 60deg, var(--cyan) 60deg, var(--cyan) 360deg',
-    ];
-    function animateDial() {
-      dialPos = (dialPos + 1) % dialStops.length;
-      document.getElementById('dial-ring').style.background =
-        'conic-gradient(' + dialStops[dialPos] + ')';
-    }
-
-    function animateSliders() {
-      const rows = document.querySelectorAll('#sliders .slider-row');
-      rows.forEach(row => {
-        const pos = Math.floor(Math.random() * 60) + 25;
-        const fill = row.querySelector('.slider-fill');
-        const knob = row.querySelector('.slider-knob');
-        if (fill) fill.style.width = pos + '%';
-        if (knob) knob.style.left = pos + '%';
-      });
+      // Cycle through dark mode states on click (when in dark mode)
+      if (isDark) {
+        darkState = (darkState + 1) % 3;
+        document.querySelectorAll('.page-bg').forEach(img => img.classList.add('hidden'));
+        document.getElementById(darkImages[darkState]).classList.remove('hidden');
+      }
     }
   </script>
 </body>
