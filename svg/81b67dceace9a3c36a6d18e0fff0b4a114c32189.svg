@@ -1,0 +1,76 @@
+<svg preserveAspectRatio="none" width="100%" height="100%" overflow="visible" style="display: block;" viewBox="0 0 152 152.001" fill="none" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<g id="Group">
+<path id="Union" d="M90 10C94.4183 10 98 13.5817 98 18V54H134C138.418 54 142 57.5817 142 62V98C142 100.209 141.105 102.208 139.658 103.656C138.21 105.104 136.21 106 134 106H98V142C98 144.209 97.1051 146.208 95.658 147.656C94.2102 149.104 92.2097 150 90 150H54C49.5817 150 46 146.418 46 142V106H10C5.58172 106 2 102.418 2 98V62C2 59.7915 2.89494 57.792 4.34196 56.3443C5.78977 54.8959 7.79026 54 10 54H46V18C46 15.7915 46.8949 13.792 48.342 12.3443C49.7898 10.8959 51.7903 10 54 10H90Z" fill="var(--fill-0, white)" stroke="var(--stroke-0, #252525)" stroke-width="4" stroke-linejoin="round"/>
+<path id="0 1" d="M106 10C106 5.58172 102.418 2 98 2L90 10C94.4183 10 98 13.5817 98 18L106 10Z" fill="var(--fill-0, white)" stroke="var(--stroke-0, #252525)" stroke-width="4" stroke-linejoin="round"/>
+<path id="3 4" d="M150 54C150 49.5817 146.418 46 142 46L134 54C138.418 54 142 57.5817 142 62L150 54Z" fill="var(--fill-0, white)" stroke="var(--stroke-0, #252525)" stroke-width="4" stroke-linejoin="round"/>
+<path id="2 3" d="M142 46H106L98 54H134L142 46Z" fill="var(--fill-0, white)" stroke="var(--stroke-0, #252525)" stroke-width="4" stroke-linejoin="round"/>
+<path id="19 0" d="M98 2H62L54 10H90L98 2Z" fill="var(--fill-0, white)" stroke="var(--stroke-0, #252525)" stroke-width="4" stroke-linejoin="round"/>
+<path id="1 2" d="M106 46V10L98 18V54L106 46Z" fill="var(--fill-0, white)" stroke="var(--stroke-0, #252525)" stroke-width="4" stroke-linejoin="round"/>
+<path id="4 5" d="M150 90V54L142 62V98L150 90Z" fill="var(--fill-0, white)" stroke="var(--stroke-0, #252525)" stroke-width="4" stroke-linejoin="round"/>
+<path id="5 20" d="M147.658 95.6557C149.105 94.208 150 92.2085 150 90L142 98C142 100.209 141.105 102.208 139.658 103.656L147.658 95.6557Z" fill="var(--fill-0, white)" stroke="var(--stroke-0, #252525)" stroke-width="4" stroke-linejoin="round"/>
+<g id="23 19">
+<path d="M62 2C59.7902 2 57.7898 2.89592 56.3419 4.34433L48.3443 12.342C49.7919 10.8949 51.7915 10 54 10L62 2Z" fill="var(--fill-0, white)"/>
+<path d="M56.3419 4.34433C57.7898 2.89592 59.7902 2 62 2L54 10C51.7902 10 49.7898 10.8959 48.3419 12.3443L56.3419 4.34433Z" stroke="var(--stroke-0, #252525)" stroke-width="4" stroke-linejoin="round"/>
+</g>
+<g id="20 6">
+<path d="M142 98.0006C144.209 98.0006 146.208 97.1056 147.656 95.6586L139.658 103.656C138.21 105.105 136.21 106.001 134 106.001L142 98.0006Z" fill="var(--fill-0, white)"/>
+<path d="M147.658 95.6562C146.21 97.1047 144.21 98.0006 142 98.0006L134 106.001C136.21 106.001 138.21 105.105 139.658 103.656L147.658 95.6562Z" stroke="var(--stroke-0, #252525)" stroke-width="4" stroke-linejoin="round"/>
+</g>
+<path id="18 23" d="M56.342 4.34375C54.8949 5.79137 54 7.79088 54 9.99942L46 17.9994C46 15.7909 46.8949 13.7914 48.342 12.3438L56.342 4.34375Z" fill="var(--fill-0, white)" stroke="var(--stroke-0, #252525)" stroke-width="4" stroke-linejoin="round"/>
+<g id="17 18">
+<path d="M54 10V46L46 54V18L54 10Z" fill="var(--fill-0, white)"/>
+<path d="M54 10V46L46 54V18L54 10Z" fill="url(#pattern0_2431_27919)"/>
+<path d="M54 10V46L46 54V18L54 10Z" stroke="var(--stroke-0, #252525)" stroke-width="4" stroke-linejoin="round"/>
+</g>
+<path id="6 7" d="M106 98H142L134 106H98L106 98Z" fill="var(--fill-0, #252525)" stroke="var(--stroke-0, #252525)" stroke-width="4" stroke-linejoin="round"/>
+<path id="16 17" d="M54 46H18L10 54H46L54 46Z" fill="var(--fill-0, white)" stroke="var(--stroke-0, #252525)" stroke-width="4" stroke-linejoin="round"/>
+<path id="7 8" d="M106 134V98L98 106V142L106 134Z" fill="var(--fill-0, white)" stroke="var(--stroke-0, #252525)" stroke-width="4" stroke-linejoin="round"/>
+<path id="8 21" d="M103.658 139.656C105.105 138.208 106 136.209 106 134L98 142C98 144.209 97.1051 146.208 95.6581 147.656L103.658 139.656Z" fill="var(--fill-0, white)" stroke="var(--stroke-0, #252525)" stroke-width="4" stroke-linejoin="round"/>
+<g id="22 16">
+<path d="M18 46C15.7902 46 13.7898 46.8959 12.3419 48.3443L4.34433 56.342C5.79195 54.8949 7.79146 54 9.99999 54L18 46Z" fill="var(--fill-0, white)"/>
+<path d="M12.3419 48.3443C13.7898 46.8959 15.7902 46 18 46L9.99999 54C7.79025 54 5.78976 54.8959 4.34195 56.3443L12.3419 48.3443Z" stroke="var(--stroke-0, #252525)" stroke-width="4" stroke-linejoin="round"/>
+</g>
+<g id="21 9">
+<path d="M98 142.001C100.209 142.001 102.208 141.106 103.656 139.659L95.658 147.656C94.2102 149.105 92.2097 150.001 90 150.001L98 142.001Z" fill="var(--fill-0, white)"/>
+<path d="M103.658 139.656C102.21 141.105 100.21 142.001 98 142.001L90 150.001C92.2097 150.001 94.2102 149.105 95.658 147.656L103.658 139.656Z" stroke="var(--stroke-0, #252525)" stroke-width="4" stroke-linejoin="round"/>
+</g>
+<path id="15 22" d="M12.342 48.3438C10.8949 49.7914 10 51.7909 10 53.9994L2 61.9994C2 59.7909 2.89494 57.7914 4.34196 56.3438L12.342 48.3438Z" fill="var(--fill-0, white)" stroke="var(--stroke-0, #252525)" stroke-width="4" stroke-linejoin="round"/>
+<g id="14 15">
+<path d="M10 54V90L2 98V62L10 54Z" fill="var(--fill-0, white)"/>
+<path d="M10 54V90L2 98V62L10 54Z" fill="url(#pattern1_2431_27919)"/>
+<path d="M10 54V90L2 98V62L10 54Z" stroke="var(--stroke-0, #252525)" stroke-width="4" stroke-linejoin="round"/>
+</g>
+<path id="9 10" d="M62 142H98L90 150H54L62 142Z" fill="var(--fill-0, #252525)" stroke="var(--stroke-0, #252525)" stroke-width="4" stroke-linejoin="round"/>
+<path id="12 13" d="M18 98H54L46 106H10L18 98Z" fill="var(--fill-0, #252525)" stroke="var(--stroke-0, #252525)" stroke-width="4" stroke-linejoin="round"/>
+<g id="11 12">
+<path d="M54 98V134L46 142V106L54 98Z" fill="var(--fill-0, white)"/>
+<path d="M54 98V134L46 142V106L54 98Z" fill="url(#pattern2_2431_27919)"/>
+<path d="M54 98V134L46 142V106L54 98Z" stroke="var(--stroke-0, #252525)" stroke-width="4" stroke-linejoin="round"/>
+</g>
+<path id="13 14" d="M10 90C10 94.4183 13.5817 98 18 98L10 106C5.58172 106 2 102.418 2 98L10 90Z" fill="var(--fill-0, #252525)" stroke="var(--stroke-0, #252525)" stroke-width="4" stroke-linejoin="round"/>
+<path id="10 11" d="M54 134C54 138.418 57.5817 142 62 142L54 150C49.5817 150 46 146.418 46 142L54 134Z" fill="var(--fill-0, #252525)" stroke="var(--stroke-0, #252525)" stroke-width="4" stroke-linejoin="round"/>
+</g>
+<defs>
+<pattern id="pattern0_2431_27919" patternUnits="userSpaceOnUse" patternTransform="matrix(3.3872 0 0 6.7744 46 10)" preserveAspectRatio="none" viewBox="0 0 2.92 5.84" width="1" height="1">
+<use xlink:href="#pattern0_2431_27919_inner" transform="translate(-2.92 0)"/>
+<g id="pattern0_2431_27919_inner">
+<circle id="Ellipse 248" cx="1" cy="1" r="1" fill="var(--fill-0, #252525)"/>
+</g>
+<use xlink:href="#pattern0_2431_27919_inner" transform="translate(-1.46 2.92)"/>
+<use xlink:href="#pattern0_2431_27919_inner" transform="translate(1.46 2.92)"/>
+</pattern><pattern id="pattern1_2431_27919" patternUnits="userSpaceOnUse" patternTransform="matrix(3.3872 0 0 6.7744 2 54)" preserveAspectRatio="none" viewBox="0 0 2.92 5.84" width="1" height="1">
+<use xlink:href="#pattern1_2431_27919_inner" transform="translate(-2.92 0)"/>
+<g id="pattern1_2431_27919_inner">
+<circle id="Ellipse 248" cx="1" cy="1" r="1" fill="var(--fill-0, #252525)"/>
+</g>
+<use xlink:href="#pattern1_2431_27919_inner" transform="translate(-1.46 2.92)"/>
+<use xlink:href="#pattern1_2431_27919_inner" transform="translate(1.46 2.92)"/>
+</pattern><pattern id="pattern2_2431_27919" patternUnits="userSpaceOnUse" patternTransform="matrix(3.3872 0 0 6.7744 46 98)" preserveAspectRatio="none" viewBox="0 0 2.92 5.84" width="1" height="1">
+<use xlink:href="#pattern2_2431_27919_inner" transform="translate(-2.92 0)"/>
+<g id="pattern2_2431_27919_inner">
+<circle id="Ellipse 248" cx="1" cy="1" r="1" fill="var(--fill-0, #252525)"/>
+</g>
+<use xlink:href="#pattern2_2431_27919_inner" transform="translate(-1.46 2.92)"/>
+<use xlink:href="#pattern2_2431_27919_inner" transform="translate(1.46 2.92)"/>
+</pattern></defs>
+</svg>
