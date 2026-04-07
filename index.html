@@ -1,264 +1,302 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>TinkerTendo</title>
   <style>
+    @import url('https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&display=swap');
     * { margin: 0; padding: 0; box-sizing: border-box; }
 
+    :root {
+      --bg: #111;
+      --frame-bg: #111;
+      --frame-border: #333;
+      --text: #ccc;
+      --text-muted: #777;
+      --footer-bg: #161616;
+      --dot-color: #444;
+      --transition: 0.4s ease;
+    }
+    [data-theme="light"] {
+      --bg: #f5f0e6;
+      --frame-bg: #f5f0e6;
+      --frame-border: #8a7a9a;
+      --text: #2a2a2a;
+      --text-muted: #555;
+      --footer-bg: #ede8dd;
+      --dot-color: #8a7a9a;
+    }
+
     body {
-      background: #141414;
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Space Mono', monospace;
+      min-height: 100vh;
       display: flex;
       justify-content: center;
-      align-items: flex-start;
-      min-height: 100vh;
-      padding: 0;
-      transition: background 0.4s ease;
+      padding: 16px;
+      transition: background var(--transition), color var(--transition);
     }
-    body.light { background: #f7f2ea; }
 
-    .page-wrap {
+    .frame {
+      max-width: 780px;
+      width: 100%;
+      background: var(--frame-bg);
+      border: 2px solid var(--frame-border);
+      border-radius: 14px;
       position: relative;
-      width: 100%;
-      max-width: 1440px;
+      overflow: hidden;
+      transition: background var(--transition), border-color var(--transition);
     }
 
-    /* The original design image — this IS the visual */
-    .page-bg {
-      display: block;
-      width: 100%;
-      height: auto;
-      transition: opacity 0.3s ease;
+    /* Film-strip edge dashes */
+    .frame::before, .frame::after {
+      content: '';
+      position: absolute;
+      top: 10px; bottom: 10px;
+      width: 5px;
+      z-index: 1;
+      background: repeating-linear-gradient(
+        to bottom, var(--dot-color) 0px, var(--dot-color) 5px,
+        transparent 5px, transparent 14px
+      );
+      transition: background var(--transition);
     }
-    .page-bg.hidden { display: none; }
+    .frame::before { left: 8px; }
+    .frame::after { right: 8px; }
 
-    /* Theme toggle button floating on top */
+    .content { padding: 30px 36px 0; position: relative; z-index: 2; }
+
     .theme-toggle {
-      position: absolute;
-      top: 3.8%;
-      right: 7%;
-      z-index: 20;
+      position: absolute; top: 12px; right: 36px; z-index: 10;
       cursor: pointer;
-      background: rgba(255,255,255,0.08);
-      border: 1px solid rgba(255,255,255,0.15);
-      border-radius: 20px;
-      padding: 4px 14px;
-      color: rgba(255,255,255,0.5);
-      font-family: 'Space Mono', monospace, monospace;
-      font-size: 10px;
-      transition: all 0.3s ease;
-      letter-spacing: 0.5px;
+      background: transparent;
+      border: 1px solid var(--frame-border);
+      border-radius: 20px; padding: 4px 12px;
+      color: var(--text-muted);
+      font-family: 'Space Mono', monospace;
+      font-size: 9px; letter-spacing: 0.5px;
+      transition: all var(--transition);
     }
-    .theme-toggle:hover { border-color: #2ee8d5; color: #fff; }
-    body.light .theme-toggle {
-      background: rgba(0,0,0,0.04);
-      border-color: rgba(0,0,0,0.15);
-      color: rgba(0,0,0,0.4);
-    }
-    body.light .theme-toggle:hover { border-color: #2ee8d5; color: #000; }
+    .theme-toggle:hover { border-color: #2ee8d5; color: var(--text); }
 
-    /* Invisible click grid overlay */
-    .click-grid {
-      position: absolute;
-      /* Grid area within the image — these percentages map to the card grid */
-      top: 25.6%;
-      left: 1.5%;
-      width: 97%;
-      height: 41.5%;
+    .tagline {
+      font-size: 19px; font-weight: 700;
+      line-height: 1.45; margin-bottom: 22px;
+      max-width: 500px;
+    }
+
+    /* Card Grid */
+    .grid {
       display: grid;
       grid-template-columns: repeat(5, 1fr);
-      grid-template-rows: repeat(2, 1fr);
-      gap: 1.1% 1.1%;
-      z-index: 10;
+      gap: 8px;
     }
-
-    .click-card {
+    .card {
+      aspect-ratio: 1;
+      border-radius: 10px;
+      overflow: hidden;
       cursor: pointer;
-      border-radius: 8px;
       position: relative;
       transition: transform 0.15s ease;
     }
-    .click-card:hover {
-      transform: scale(1.03);
-    }
-    .click-card:active {
-      transform: scale(0.97);
-    }
-
-    /* Animation flash overlay on click */
-    .click-card::after {
-      content: '';
-      position: absolute;
-      inset: 0;
-      border-radius: 8px;
-      background: rgba(46, 232, 213, 0);
-      transition: background 0.15s ease;
+    .card:hover { transform: scale(1.03); }
+    .card:active { transform: scale(0.97); }
+    .card img {
+      display: block;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 10px;
       pointer-events: none;
     }
-    .click-card.flash::after {
-      animation: cardFlash 0.4s ease;
+    /* Click flash */
+    .card::after {
+      content: '';
+      position: absolute; inset: 0;
+      border-radius: 10px;
+      background: transparent;
+      pointer-events: none;
     }
-    @keyframes cardFlash {
-      0%   { background: rgba(46, 232, 213, 0.15); }
-      100% { background: rgba(46, 232, 213, 0); }
+    .card.flash::after { animation: flash 0.35s ease; }
+    @keyframes flash {
+      0%   { background: rgba(46,232,213,0.18); }
+      100% { background: transparent; }
     }
-
-    /* Wiggle animation for joystick, dpad */
-    .click-card.wiggle {
-      animation: wiggle 0.5s ease;
-    }
+    .card.wiggle { animation: wiggle 0.5s ease; }
     @keyframes wiggle {
       0%   { transform: rotate(0); }
-      20%  { transform: rotate(4deg); }
-      40%  { transform: rotate(-4deg); }
-      60%  { transform: rotate(3deg); }
-      80%  { transform: rotate(-2deg); }
+      20%  { transform: rotate(3deg); }
+      40%  { transform: rotate(-3deg); }
+      60%  { transform: rotate(2deg); }
+      80%  { transform: rotate(-1deg); }
       100% { transform: rotate(0); }
     }
-
-    /* Spin for logo */
-    .click-card.spin {
-      animation: spin 0.7s ease;
-    }
+    .card.spin { animation: spin 0.65s ease; }
     @keyframes spin {
       0%   { transform: rotate(0deg) scale(1); }
-      50%  { transform: rotate(180deg) scale(1.05); }
+      50%  { transform: rotate(180deg) scale(1.04); }
       100% { transform: rotate(360deg) scale(1); }
     }
-
-    /* Bounce for cartridge, power, buttons */
-    .click-card.bounce {
-      animation: bounce 0.4s ease;
-    }
+    .card.bounce { animation: bounce 0.4s ease; }
     @keyframes bounce {
       0%   { transform: translateY(0); }
-      30%  { transform: translateY(-8px); }
-      60%  { transform: translateY(2px); }
+      35%  { transform: translateY(-6px); }
+      65%  { transform: translateY(2px); }
       100% { transform: translateY(0); }
     }
-
-    /* Pulse for power */
-    .click-card.pulse {
-      animation: pulse 0.5s ease;
-    }
+    .card.pulse { animation: pulse 0.5s ease; }
     @keyframes pulse {
-      0%   { transform: scale(1); box-shadow: 0 0 0 0 rgba(245, 214, 35, 0.4); }
-      50%  { transform: scale(1.05); box-shadow: 0 0 20px 8px rgba(245, 214, 35, 0.2); }
-      100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(245, 214, 35, 0); }
+      0%   { transform: scale(1); filter: brightness(1); }
+      50%  { transform: scale(1.06); filter: brightness(1.2); }
+      100% { transform: scale(1); filter: brightness(1); }
+    }
+    .card.pop { animation: pop 0.3s ease; }
+    @keyframes pop {
+      0%   { transform: scale(1); }
+      50%  { transform: scale(0.92); }
+      100% { transform: scale(1); }
     }
 
-    /* Card state overlays — shows region from alternate dark mode images */
-    .card-state-overlay {
-      position: absolute;
-      inset: 0;
-      border-radius: 8px;
-      background-size: cover;
-      pointer-events: none;
-      z-index: 5;
+    /* Staggered entry */
+    .card {
       opacity: 0;
-      transition: opacity 0.25s ease;
+      transform: translateY(14px);
+      animation: enterCard 0.35s ease forwards;
     }
-    .card-state-overlay.active {
-      opacity: 1;
-    }
-
-    /* Entry animation */
-    .click-card {
-      opacity: 0;
-      transform: translateY(10px);
-      animation: enterCard 0.4s ease forwards;
-    }
-    .click-card:nth-child(1)  { animation-delay: 0.05s; }
-    .click-card:nth-child(2)  { animation-delay: 0.10s; }
-    .click-card:nth-child(3)  { animation-delay: 0.15s; }
-    .click-card:nth-child(4)  { animation-delay: 0.20s; }
-    .click-card:nth-child(5)  { animation-delay: 0.25s; }
-    .click-card:nth-child(6)  { animation-delay: 0.30s; }
-    .click-card:nth-child(7)  { animation-delay: 0.35s; }
-    .click-card:nth-child(8)  { animation-delay: 0.40s; }
-    .click-card:nth-child(9)  { animation-delay: 0.45s; }
-    .click-card:nth-child(10) { animation-delay: 0.50s; }
+    .card:nth-child(1)  { animation-delay: 0.04s; }
+    .card:nth-child(2)  { animation-delay: 0.08s; }
+    .card:nth-child(3)  { animation-delay: 0.12s; }
+    .card:nth-child(4)  { animation-delay: 0.16s; }
+    .card:nth-child(5)  { animation-delay: 0.20s; }
+    .card:nth-child(6)  { animation-delay: 0.24s; }
+    .card:nth-child(7)  { animation-delay: 0.28s; }
+    .card:nth-child(8)  { animation-delay: 0.32s; }
+    .card:nth-child(9)  { animation-delay: 0.36s; }
+    .card:nth-child(10) { animation-delay: 0.40s; }
     @keyframes enterCard {
       to { opacity: 1; transform: translateY(0); }
     }
 
-    @media (max-width: 700px) {
-      .theme-toggle { font-size: 8px; padding: 3px 10px; }
+    /* Footer */
+    .footer {
+      background: var(--footer-bg);
+      border-top: 1px solid var(--frame-border);
+      padding: 18px 36px 22px;
+      display: grid;
+      grid-template-columns: 1fr 1.3fr 1.3fr;
+      gap: 16px;
+      font-size: 9.5px; line-height: 1.65;
+      color: var(--text-muted);
+      margin-top: 22px;
+      position: relative; z-index: 2;
+      transition: background var(--transition), border-color var(--transition), color var(--transition);
+    }
+    .footer p { margin: 0; }
+
+    @media (max-width: 640px) {
+      .content { padding: 20px 22px 0; }
+      .tagline { font-size: 15px; }
+      .grid { grid-template-columns: repeat(3, 1fr); gap: 6px; }
+      .footer { grid-template-columns: 1fr; padding: 14px 22px; }
     }
   </style>
-  <link href="https://fonts.googleapis.com/css2?family=Space+Mono&display=swap" rel="stylesheet">
 </head>
 <body>
-  <div class="page-wrap">
-    <!-- The original design images — pixel-perfect -->
-    <img id="img-dark1" class="page-bg" src="dark%20mode1.png" alt="TinkerTendo">
-    <img id="img-dark2" class="page-bg hidden" src="dark%20mode2.png" alt="TinkerTendo">
-    <img id="img-dark3" class="page-bg hidden" src="dark%20mode3.png" alt="TinkerTendo">
-    <img id="img-light" class="page-bg hidden" src="tinker-light.png" alt="TinkerTendo">
-
-    <!-- Theme toggle -->
-    <button class="theme-toggle" id="themeBtn" onclick="toggleTheme()">
-      <span id="theme-label">light mode</span>
-    </button>
-
-    <!-- Invisible click areas over each card -->
-    <div class="click-grid">
-      <div class="click-card" data-card="0" data-anim="wiggle" onclick="animateCard(this)"></div>
-      <div class="click-card" data-card="1" data-anim="spin" onclick="animateCard(this)"></div>
-      <div class="click-card" data-card="2" data-anim="flash" onclick="animateCard(this)"></div>
-      <div class="click-card" data-card="3" data-anim="flash" onclick="animateCard(this)"></div>
-      <div class="click-card" data-card="4" data-anim="bounce" onclick="animateCard(this)"></div>
-      <div class="click-card" data-card="5" data-anim="pulse" onclick="animateCard(this)"></div>
-      <div class="click-card" data-card="6" data-anim="wiggle" onclick="animateCard(this)"></div>
-      <div class="click-card" data-card="7" data-anim="flash" onclick="animateCard(this)"></div>
-      <div class="click-card" data-card="8" data-anim="flash" onclick="animateCard(this)"></div>
-      <div class="click-card" data-card="9" data-anim="flash" onclick="animateCard(this)"></div>
+  <div class="frame">
+    <div class="content">
+      <button class="theme-toggle" onclick="toggleTheme()">
+        <span id="theme-label">light mode</span>
+      </button>
+      <p class="tagline">TinkerTendo is a warehouse converted to a creative maker space in San Francisco.</p>
+      <div class="grid" id="grid"></div>
+    </div>
+    <div class="footer">
+      <p>1025 Tennessee St.<br>San Francisco, CA, 94107</p>
+      <p>TinkerTendo is a warehouse converted to a creative maker space in San Francisco. It's a launching point for expeditions and adventures, whether to national parks or Burning Man. Membership is currently by invitation only.</p>
+      <p>The name is inspired by the spirit of tinkering, and Tendo or &#22825;&#36947; in Japanese which can mean "way to heaven," as in Nintendo. The "ten" is also the first part of the address on Tennessee Street.</p>
     </div>
   </div>
 
   <script>
-    let isDark = true;
+    // Card configuration: animation type + which dark mode states differ
+    const CARDS = [
+      { anim: 'wiggle' },   // 1: joystick
+      { anim: 'spin' },     // 2: logo
+      { anim: 'pop' },      // 3: buttons
+      { anim: 'flash' },    // 4: toggle
+      { anim: 'bounce' },   // 5: cartridge (texture cycles)
+      { anim: 'pulse' },    // 6: power
+      { anim: 'wiggle' },   // 7: dpad
+      { anim: 'flash' },    // 8: switch2 (texture cycles)
+      { anim: 'flash' },    // 9: dial
+      { anim: 'flash' },    // 10: sliders
+    ];
 
-    // Dark mode state cycling: rotate through 3 dark images
-    const darkImages = ['img-dark1', 'img-dark2', 'img-dark3'];
-    let darkState = 0;
+    const STATES = ['dark1', 'dark2', 'dark3'];
+    let theme = 'dark';
+    let cardStates = new Array(10).fill(0); // which dark state each card shows
+
+    // Build card grid
+    const grid = document.getElementById('grid');
+    CARDS.forEach((cfg, i) => {
+      const n = i + 1;
+      const card = document.createElement('div');
+      card.className = 'card';
+      card.dataset.index = i;
+      card.dataset.anim = cfg.anim;
+
+      const img = document.createElement('img');
+      img.src = `cards/dark1-c${n}.png`;
+      img.alt = `Card ${n}`;
+      img.draggable = false;
+      card.appendChild(img);
+
+      card.addEventListener('click', () => onCardClick(card, i));
+      grid.appendChild(card);
+    });
+
+    function onCardClick(card, idx) {
+      const anim = card.dataset.anim;
+
+      // Remove + re-trigger animation
+      card.classList.remove('wiggle','spin','bounce','pulse','pop','flash');
+      void card.offsetWidth;
+      card.classList.add(anim);
+      setTimeout(() => card.classList.remove(anim), 700);
+
+      // Cycle this card's dark state
+      if (theme === 'dark') {
+        cardStates[idx] = (cardStates[idx] + 1) % 3;
+        const img = card.querySelector('img');
+        img.src = `cards/${STATES[cardStates[idx]]}-c${idx + 1}.png`;
+      }
+    }
 
     function toggleTheme() {
-      isDark = !isDark;
-      const label = document.getElementById('theme-label');
-      document.body.classList.toggle('light', !isDark);
+      theme = theme === 'dark' ? 'light' : 'dark';
+      document.documentElement.dataset.theme = theme;
+      document.getElementById('theme-label').textContent =
+        theme === 'dark' ? 'light mode' : 'dark mode';
 
-      // Hide all images
-      document.querySelectorAll('.page-bg').forEach(img => img.classList.add('hidden'));
-
-      if (isDark) {
-        document.getElementById(darkImages[darkState]).classList.remove('hidden');
-        label.textContent = 'light mode';
-      } else {
-        document.getElementById('img-light').classList.remove('hidden');
-        label.textContent = 'dark mode';
-      }
+      // Swap all card images
+      document.querySelectorAll('.card').forEach((card, i) => {
+        const img = card.querySelector('img');
+        if (theme === 'light') {
+          img.src = `cards/light-c${i + 1}.png`;
+        } else {
+          img.src = `cards/${STATES[cardStates[i]]}-c${i + 1}.png`;
+        }
+      });
     }
 
-    function animateCard(el) {
-      const anim = el.dataset.anim;
-
-      // Remove any existing animation
-      el.classList.remove('wiggle', 'spin', 'bounce', 'pulse', 'flash');
-      void el.offsetWidth; // force reflow
-
-      // Apply animation
-      el.classList.add(anim);
-      setTimeout(() => el.classList.remove(anim), 600);
-
-      // Cycle through dark mode states on click (when in dark mode)
-      if (isDark) {
-        darkState = (darkState + 1) % 3;
-        document.querySelectorAll('.page-bg').forEach(img => img.classList.add('hidden'));
-        document.getElementById(darkImages[darkState]).classList.remove('hidden');
+    // Preload all images
+    ['dark1','dark2','dark3','light'].forEach(prefix => {
+      for (let i = 1; i <= 10; i++) {
+        new Image().src = `cards/${prefix}-c${i}.png`;
       }
-    }
+    });
   </script>
 </body>
 </html>
