@@ -17,32 +17,32 @@
 
     /* ——— DARK THEME (default) ——— */
     [data-theme="dark"] {
-      --bg: #1c1c1c;
-      --surface: #2b2b2b;
-      --surface-border: #3d3d3d;
-      --text: #d8d8d8;
-      --text-muted: #888;
-      --frame-bg: #1c1c1c;
-      --frame-border: #3a3a3a;
-      --card-shadow: inset 0 1px 0 rgba(255,255,255,0.04), 0 2px 8px rgba(0,0,0,0.5);
-      --dot-color: #4a4a4a;
-      --footer-bg: #232323;
-      --footer-border: #333;
+      --bg: #141414;
+      --surface: #222;
+      --surface-border: #333;
+      --text: #d0d0d0;
+      --text-muted: #777;
+      --frame-bg: #141414;
+      --frame-border: #333;
+      --card-shadow: inset 0 1px 0 rgba(255,255,255,0.04), inset 0 0 0 1px rgba(255,255,255,0.02), 0 2px 8px rgba(0,0,0,0.5);
+      --dot-color: #444;
+      --footer-bg: #1a1a1a;
+      --footer-border: #2a2a2a;
     }
 
     /* ——— LIGHT THEME ——— */
     [data-theme="light"] {
       --bg: #f7f2ea;
       --surface: #ffffff;
-      --surface-border: #d0c8bc;
+      --surface-border: #ccc5b8;
       --text: #2a2a2a;
       --text-muted: #666;
       --frame-bg: #f7f2ea;
-      --frame-border: #c8c0b4;
-      --card-shadow: 0 1px 4px rgba(0,0,0,0.06);
-      --dot-color: #c8c0b4;
-      --footer-bg: #efe9e0;
-      --footer-border: #d0c8bc;
+      --frame-border: #c5beb2;
+      --card-shadow: 0 1px 3px rgba(0,0,0,0.06);
+      --dot-color: #c5beb2;
+      --footer-bg: #ede8df;
+      --footer-border: #d5cec2;
     }
 
     body {
@@ -54,12 +54,12 @@
       display: flex;
       justify-content: center;
       align-items: flex-start;
-      padding: 24px 16px;
+      padding: 20px 16px;
     }
 
     /* ——— CONSOLE FRAME ——— */
     .console-frame {
-      max-width: 800px;
+      max-width: 780px;
       width: 100%;
       background: var(--frame-bg);
       border: 2px solid var(--frame-border);
@@ -74,38 +74,24 @@
     .console-frame::after {
       content: '';
       position: absolute;
-      top: 16px;
-      bottom: 16px;
-      width: 6px;
+      top: 12px;
+      bottom: 12px;
+      width: 5px;
       z-index: 1;
+      background: repeating-linear-gradient(
+        to bottom,
+        var(--dot-color) 0px,
+        var(--dot-color) 5px,
+        transparent 5px,
+        transparent 14px
+      );
       transition: background var(--transition);
     }
-    .console-frame::before { left: 10px; }
-    .console-frame::after { right: 10px; }
-
-    [data-theme="dark"] .console-frame::before,
-    [data-theme="dark"] .console-frame::after {
-      background: repeating-linear-gradient(
-        to bottom,
-        var(--dot-color) 0px,
-        var(--dot-color) 6px,
-        transparent 6px,
-        transparent 16px
-      );
-    }
-    [data-theme="light"] .console-frame::before,
-    [data-theme="light"] .console-frame::after {
-      background: repeating-linear-gradient(
-        to bottom,
-        var(--dot-color) 0px,
-        var(--dot-color) 2px,
-        transparent 2px,
-        transparent 10px
-      );
-    }
+    .console-frame::before { left: 9px; }
+    .console-frame::after { right: 9px; }
 
     .inner-content {
-      padding: 36px 42px 28px;
+      padding: 32px 38px 24px;
       position: relative;
       z-index: 2;
     }
@@ -113,14 +99,14 @@
     /* Theme toggle */
     .theme-toggle {
       position: absolute;
-      top: 14px;
-      right: 42px;
+      top: 12px;
+      right: 38px;
       z-index: 10;
       cursor: pointer;
       background: var(--surface);
       border: 1px solid var(--surface-border);
       border-radius: 20px;
-      padding: 5px 14px;
+      padding: 4px 12px;
       color: var(--text-muted);
       font-family: 'Space Mono', monospace;
       font-size: 10px;
@@ -131,11 +117,11 @@
 
     /* Tagline */
     .tagline {
-      font-size: 21px;
+      font-size: 20px;
       font-weight: 700;
       line-height: 1.45;
-      margin-bottom: 28px;
-      max-width: 540px;
+      margin-bottom: 24px;
+      max-width: 520px;
     }
 
     /* ——— GRID ——— */
@@ -143,13 +129,12 @@
       display: grid;
       grid-template-columns: repeat(5, 1fr);
       gap: 10px;
-      margin-bottom: 0;
     }
 
     .card {
       background: var(--surface);
       border: 1px solid var(--surface-border);
-      border-radius: 12px;
+      border-radius: 10px;
       aspect-ratio: 1;
       display: flex;
       align-items: center;
@@ -166,50 +151,42 @@
     .card:active { transform: scale(0.97); }
 
     /* =========================================================
-       CARD 1 — JOYSTICK (cross-base + stick + yellow head)
+       CARD 1 — JOYSTICK
        ========================================================= */
     .joystick-wrap {
-      width: 55%;
-      height: 70%;
+      width: 50%;
+      height: 75%;
       position: relative;
-      display: flex;
-      align-items: center;
-      justify-content: center;
     }
-    /* vertical stick */
     .joystick-stick {
       position: absolute;
-      width: 3px;
-      height: 60%;
-      bottom: 18%;
+      width: 2px;
+      height: 50%;
+      bottom: 16%;
       left: 50%;
       transform: translateX(-50%);
       background: var(--text-muted);
     }
-    /* horizontal crossbar at base */
     .joystick-crossbar {
       position: absolute;
-      width: 50%;
-      height: 3px;
-      bottom: 18%;
-      left: 25%;
+      width: 60%;
+      height: 2px;
+      bottom: 16%;
+      left: 20%;
       background: var(--text-muted);
     }
-    /* yellow square head */
     .joystick-head {
       position: absolute;
-      top: 8%;
+      top: 12%;
       left: 50%;
       transform: translate(-50%, 0);
-      width: 30px;
-      height: 30px;
+      width: 26px;
+      height: 22px;
       background: var(--yellow);
-      border-radius: 5px;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+      border-radius: 4px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.3);
     }
-    .joystick-head.wiggle {
-      animation: joystickWiggle 0.6s ease;
-    }
+    .joystick-head.wiggle { animation: joystickWiggle 0.6s ease; }
     @keyframes joystickWiggle {
       0%   { transform: translate(-50%, 0) rotate(0deg); }
       20%  { transform: translate(-40%, -6px) rotate(10deg); }
@@ -223,8 +200,8 @@
        CARD 2 — LOGO
        ========================================================= */
     .logo-circle {
-      width: 76%;
-      height: 76%;
+      width: 80%;
+      height: 80%;
       background: var(--yellow);
       border-radius: 50%;
       display: flex;
@@ -232,30 +209,25 @@
       align-items: center;
       justify-content: center;
       transition: transform 0.3s ease;
-      gap: 1px;
     }
     .logo-icon {
-      width: 28px;
-      height: 22px;
+      width: 26px;
+      height: 20px;
       margin-bottom: 2px;
     }
-    /* SVG warehouse icon */
-    .logo-icon svg {
-      width: 100%;
-      height: 100%;
-    }
+    .logo-icon svg { width: 100%; height: 100%; }
     .logo-text {
       font-weight: 700;
-      font-size: 12px;
+      font-size: 11px;
       color: #1a1a1a;
       line-height: 1.1;
       text-align: center;
       letter-spacing: 1.5px;
     }
     .logo-est {
-      font-size: 8px;
-      color: #666;
-      margin-top: 2px;
+      font-size: 7px;
+      color: #777;
+      margin-top: 1px;
       letter-spacing: 2px;
     }
     .logo-circle.spin { animation: logoSpin 0.8s ease; }
@@ -266,17 +238,17 @@
     }
 
     /* =========================================================
-       CARD 3 — BUTTON CLUSTER (4 circles in diamond)
+       CARD 3 — BUTTON CLUSTER
        ========================================================= */
     .btn-cluster {
-      width: 56%;
-      height: 56%;
+      width: 54%;
+      height: 54%;
       position: relative;
     }
     .cluster-btn {
       position: absolute;
-      width: 26px;
-      height: 26px;
+      width: 30%;
+      height: 30%;
       background: var(--cyan);
       border-radius: 50%;
       box-shadow: 0 2px 5px rgba(0,0,0,0.25);
@@ -287,19 +259,19 @@
       50%  { transform: scale(1.3); }
       100% { transform: scale(1); }
     }
-    .cluster-btn:nth-child(1) { top: 0; left: 50%; transform: translateX(-50%); }     /* top */
-    .cluster-btn:nth-child(2) { bottom: 0; left: 50%; transform: translateX(-50%); }  /* bottom */
-    .cluster-btn:nth-child(3) { top: 50%; left: 0; transform: translateY(-50%); }     /* left */
-    .cluster-btn:nth-child(4) { top: 50%; right: 0; transform: translateY(-50%); }    /* right */
+    .cluster-btn:nth-child(1) { top: 0; left: 50%; transform: translateX(-50%); }
+    .cluster-btn:nth-child(2) { bottom: 0; left: 50%; transform: translateX(-50%); }
+    .cluster-btn:nth-child(3) { top: 50%; left: 0; transform: translateY(-50%); }
+    .cluster-btn:nth-child(4) { top: 50%; right: 0; transform: translateY(-50%); }
 
     /* =========================================================
-       CARD 4 — TOGGLE SWITCH (horizontal lines on knob)
+       CARD 4 — TOGGLE SWITCH (big track, lines on knob)
        ========================================================= */
     .toggle-track {
-      width: 48px;
-      height: 78px;
+      width: 52%;
+      height: 68%;
       background: var(--cyan);
-      border-radius: 14px;
+      border-radius: 999px;
       position: relative;
       cursor: pointer;
     }
@@ -307,11 +279,11 @@
       position: absolute;
       left: 50%;
       transform: translateX(-50%);
-      width: 38px;
-      height: 36px;
+      width: 82%;
+      height: 42%;
       background: var(--yellow);
-      border-radius: 8px;
-      top: 5px;
+      border-radius: 20%;
+      top: 5%;
       transition: top 0.3s cubic-bezier(0.68, -0.3, 0.32, 1.3);
       box-shadow: 0 2px 5px rgba(0,0,0,0.25);
       display: flex;
@@ -319,7 +291,7 @@
       justify-content: center;
     }
     .toggle-knob .lines {
-      width: 18px;
+      width: 50%;
       display: flex;
       flex-direction: column;
       gap: 3px;
@@ -327,35 +299,55 @@
     .toggle-knob .lines span {
       display: block;
       height: 2px;
-      background: rgba(0,0,0,0.2);
+      background: rgba(0,0,0,0.18);
       border-radius: 1px;
     }
     .toggle-track.on .toggle-knob {
-      top: calc(100% - 41px);
+      top: 53%;
     }
 
     /* =========================================================
-       CARD 5 — CARTRIDGE
+       CARD 5 — CARTRIDGE (wide yellow rect with grooves)
        ========================================================= */
     .cartridge {
-      width: 54px;
-      height: 44px;
+      width: 60%;
+      height: 42%;
       background: var(--yellow);
-      border-radius: 6px;
+      border-radius: 8%;
       position: relative;
       box-shadow: 0 2px 5px rgba(0,0,0,0.25);
     }
     .cartridge-label {
       position: absolute;
-      top: 5px; left: 5px; right: 5px; bottom: 12px;
+      top: 12%; left: 10%; right: 10%; bottom: 25%;
+      border-radius: 4%;
+      transition: background 0.3s ease;
+    }
+    .cartridge-label.texture-lines {
       background: repeating-linear-gradient(
-        to bottom,
-        rgba(0,0,0,0.07) 0px,
-        rgba(0,0,0,0.07) 2px,
-        transparent 2px,
-        transparent 5px
+        0deg,
+        rgba(0,0,0,0.08) 0px, rgba(0,0,0,0.08) 2px,
+        transparent 2px, transparent 5px
       );
-      border-radius: 2px;
+    }
+    .cartridge-label.texture-cross {
+      background: repeating-linear-gradient(
+        -45deg,
+        rgba(0,0,0,0.06) 0px, rgba(0,0,0,0.06) 2px,
+        transparent 2px, transparent 5px
+      ),
+      repeating-linear-gradient(
+        45deg,
+        rgba(0,0,0,0.06) 0px, rgba(0,0,0,0.06) 2px,
+        transparent 2px, transparent 5px
+      );
+    }
+    .cartridge-label.texture-diagonal {
+      background: repeating-linear-gradient(
+        -45deg,
+        rgba(0,0,0,0.09) 0px, rgba(0,0,0,0.09) 2px,
+        transparent 2px, transparent 5px
+      );
     }
     .cartridge.eject { animation: cartridgeEject 0.6s ease; }
     @keyframes cartridgeEject {
@@ -366,27 +358,27 @@
     }
 
     /* =========================================================
-       CARD 6 — POWER BUTTON (tall cyan rect + yellow dot)
+       CARD 6 — POWER BUTTON
        ========================================================= */
     .power-btn {
-      width: 50px;
-      height: 72px;
+      width: 48%;
+      height: 66%;
       background: var(--cyan);
-      border-radius: 8px;
+      border-radius: 10%;
       position: relative;
       box-shadow: 0 2px 5px rgba(0,0,0,0.25);
     }
     .power-btn .indicator {
       position: absolute;
-      top: 12px;
+      top: 12%;
       left: 50%;
       transform: translateX(-50%);
-      width: 8px;
-      height: 8px;
+      width: 10%;
+      height: 0;
+      padding-bottom: 10%;
       background: var(--yellow);
       border-radius: 50%;
       transition: box-shadow 0.3s ease;
-      box-shadow: 0 0 0 0 rgba(245, 214, 35, 0);
     }
     .power-btn.active .indicator {
       box-shadow: 0 0 10px 4px rgba(245, 214, 35, 0.5);
@@ -401,22 +393,21 @@
        CARD 7 — D-PAD
        ========================================================= */
     .dpad {
-      width: 62px;
-      height: 62px;
+      width: 56%;
+      height: 56%;
       position: relative;
     }
     .dpad-h, .dpad-v {
       position: absolute;
       background: var(--cyan);
-      border-radius: 4px;
+      border-radius: 6%;
     }
     .dpad-h { width: 100%; height: 34%; top: 33%; left: 0; }
     .dpad-v { width: 34%; height: 100%; top: 0; left: 33%; }
     .dpad-center {
       position: absolute;
       width: 34%; height: 34%; top: 33%; left: 33%;
-      background: var(--cyan);
-      z-index: 1;
+      background: var(--cyan); z-index: 1;
     }
     .dpad.pressed-up .dpad-v    { background: #22cfc0; }
     .dpad.pressed-down .dpad-v  { background: #22cfc0; }
@@ -432,13 +423,13 @@
     }
 
     /* =========================================================
-       CARD 8 — SWITCH 2 (diagonal mesh on knob)
+       CARD 8 — SWITCH 2 (same size as toggle, mesh on knob)
        ========================================================= */
     .switch2-track {
-      width: 48px;
-      height: 78px;
+      width: 52%;
+      height: 68%;
       background: var(--cyan);
-      border-radius: 14px;
+      border-radius: 999px;
       position: relative;
       cursor: pointer;
     }
@@ -446,37 +437,57 @@
       position: absolute;
       left: 50%;
       transform: translateX(-50%);
-      width: 38px;
-      height: 36px;
+      width: 82%;
+      height: 42%;
       background: var(--yellow);
-      border-radius: 8px;
-      top: 5px;
+      border-radius: 20%;
+      top: 5%;
       transition: top 0.3s cubic-bezier(0.68, -0.3, 0.32, 1.3);
       box-shadow: 0 2px 5px rgba(0,0,0,0.25);
       overflow: hidden;
     }
     .switch2-knob .mesh {
       position: absolute;
-      top: 3px; left: 3px; right: 3px; bottom: 3px;
+      top: 8%; left: 8%; right: 8%; bottom: 8%;
+      border-radius: 12%;
+    }
+    /* Texture states for switch 2 knob */
+    .switch2-knob .mesh.texture-lines {
+      background: repeating-linear-gradient(
+        0deg,
+        rgba(0,0,0,0.1) 0px, rgba(0,0,0,0.1) 2px,
+        transparent 2px, transparent 5px
+      );
+    }
+    .switch2-knob .mesh.texture-cross {
       background: repeating-linear-gradient(
         -45deg,
-        rgba(0,0,0,0.09) 0px,
-        rgba(0,0,0,0.09) 2px,
-        transparent 2px,
-        transparent 5px
+        rgba(0,0,0,0.08) 0px, rgba(0,0,0,0.08) 2px,
+        transparent 2px, transparent 5px
+      ),
+      repeating-linear-gradient(
+        45deg,
+        rgba(0,0,0,0.08) 0px, rgba(0,0,0,0.08) 2px,
+        transparent 2px, transparent 5px
       );
-      border-radius: 5px;
+    }
+    .switch2-knob .mesh.texture-diagonal {
+      background: repeating-linear-gradient(
+        -45deg,
+        rgba(0,0,0,0.1) 0px, rgba(0,0,0,0.1) 2px,
+        transparent 2px, transparent 5px
+      );
     }
     .switch2-track.on .switch2-knob {
-      top: calc(100% - 41px);
+      top: 53%;
     }
 
     /* =========================================================
-       CARD 9 — DIAL (thick donut ring, cyan + yellow)
+       CARD 9 — DIAL (big thick donut, cyan + yellow)
        ========================================================= */
     .dial-wrap {
-      width: 72px;
-      height: 72px;
+      width: 68%;
+      height: 68%;
       position: relative;
     }
     .dial-ring {
@@ -495,19 +506,19 @@
       position: absolute;
       top: 50%; left: 50%;
       transform: translate(-50%, -50%);
-      width: 42%;
-      height: 42%;
+      width: 40%;
+      height: 40%;
       background: var(--surface);
       border-radius: 50%;
       transition: background var(--transition);
     }
 
     /* =========================================================
-       CARD 10 — SLIDERS (3 tracks + cyan knobs)
+       CARD 10 — SLIDERS
        ========================================================= */
     .sliders-wrap {
-      width: 72%;
-      height: 55%;
+      width: 70%;
+      height: 52%;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
@@ -515,7 +526,7 @@
     .slider-row {
       display: flex;
       align-items: center;
-      height: 18px;
+      height: 28%;
     }
     .slider-track {
       flex: 1;
@@ -523,7 +534,7 @@
       background: var(--text-muted);
       border-radius: 2px;
       position: relative;
-      margin-right: 8px;
+      margin-right: 6px;
     }
     .slider-fill {
       position: absolute;
@@ -534,11 +545,11 @@
       transition: width 0.4s ease;
     }
     .slider-knob {
-      width: 16px;
-      height: 16px;
+      width: 14px;
+      height: 14px;
       background: var(--cyan);
       border-radius: 50%;
-      box-shadow: 0 1px 4px rgba(0,0,0,0.3);
+      box-shadow: 0 1px 3px rgba(0,0,0,0.3);
       flex-shrink: 0;
       transition: transform 0.15s ease;
     }
@@ -548,26 +559,26 @@
     .footer {
       background: var(--footer-bg);
       border-top: 1px solid var(--footer-border);
-      padding: 22px 42px 26px;
+      padding: 20px 38px 24px;
       display: grid;
-      grid-template-columns: 1fr 1.2fr 1.2fr;
-      gap: 20px;
-      font-size: 10.5px;
+      grid-template-columns: 1fr 1.3fr 1.3fr;
+      gap: 18px;
+      font-size: 10px;
       line-height: 1.65;
       color: var(--text-muted);
       transition: background var(--transition), border-color var(--transition), color var(--transition);
       position: relative;
       z-index: 2;
-      margin-top: 28px;
+      margin-top: 24px;
     }
     .footer p { margin: 0; }
 
     /* ——— RESPONSIVE ——— */
     @media (max-width: 700px) {
-      .inner-content { padding: 28px 28px 18px; }
+      .inner-content { padding: 24px 24px 16px; }
       .tagline { font-size: 16px; }
       .grid { grid-template-columns: repeat(3, 1fr); gap: 8px; }
-      .footer { grid-template-columns: 1fr; padding: 18px 28px; }
+      .footer { grid-template-columns: 1fr; padding: 16px 24px; }
     }
     @media (max-width: 420px) {
       .grid { grid-template-columns: repeat(2, 1fr); }
@@ -577,8 +588,8 @@
     /* ——— ENTRY ANIMATIONS ——— */
     .card {
       opacity: 0;
-      transform: translateY(18px) scale(0.96);
-      animation: cardEnter 0.45s ease forwards;
+      transform: translateY(16px) scale(0.96);
+      animation: cardEnter 0.4s ease forwards;
     }
     .card:nth-child(1)  { animation-delay: 0.05s; }
     .card:nth-child(2)  { animation-delay: 0.10s; }
@@ -619,12 +630,12 @@
         <div class="card" onclick="animateLogo()">
           <div class="logo-circle" id="logo">
             <div class="logo-icon">
-              <svg viewBox="0 0 40 32" fill="none">
-                <rect x="8" y="12" width="24" height="18" rx="2" fill="#1a1a1a" opacity="0.7"/>
-                <rect x="14" y="17" width="5" height="7" rx="1" fill="#f5d623" opacity="0.5"/>
-                <rect x="22" y="17" width="5" height="4" rx="1" fill="#f5d623" opacity="0.5"/>
-                <polygon points="20,2 4,14 36,14" fill="#1a1a1a" opacity="0.7"/>
-                <rect x="17" y="5" width="6" height="5" rx="1" fill="#1a1a1a" opacity="0.5"/>
+              <svg viewBox="0 0 36 28" fill="none">
+                <rect x="6" y="10" width="24" height="16" rx="2" fill="#1a1a1a" opacity="0.65"/>
+                <rect x="11" y="14" width="5" height="7" rx="1" fill="#f5d623" opacity="0.4"/>
+                <rect x="19" y="14" width="5" height="4" rx="1" fill="#f5d623" opacity="0.4"/>
+                <polygon points="18,1 3,12 33,12" fill="#1a1a1a" opacity="0.65"/>
+                <rect x="15" y="3" width="6" height="5" rx="1" fill="#1a1a1a" opacity="0.45"/>
               </svg>
             </div>
             <div class="logo-text">TINKER<br>TENDO</div>
@@ -656,7 +667,7 @@
         <!-- 5: Cartridge -->
         <div class="card" onclick="animateCartridge()">
           <div class="cartridge" id="cartridge">
-            <div class="cartridge-label"></div>
+            <div class="cartridge-label texture-lines" id="cartridge-label"></div>
           </div>
         </div>
 
@@ -680,7 +691,7 @@
         <div class="card" onclick="toggleSwitch2()">
           <div class="switch2-track" id="toggle2">
             <div class="switch2-knob">
-              <div class="mesh"></div>
+              <div class="mesh texture-lines" id="switch2-mesh"></div>
             </div>
           </div>
         </div>
@@ -697,15 +708,15 @@
         <div class="card" onclick="animateSliders()">
           <div class="sliders-wrap" id="sliders">
             <div class="slider-row">
-              <div class="slider-track"><div class="slider-fill" style="width:75%"></div></div>
+              <div class="slider-track"><div class="slider-fill" style="width:70%"></div></div>
               <div class="slider-knob"></div>
             </div>
             <div class="slider-row">
-              <div class="slider-track"><div class="slider-fill" style="width:55%"></div></div>
+              <div class="slider-track"><div class="slider-fill" style="width:50%"></div></div>
               <div class="slider-knob"></div>
             </div>
             <div class="slider-row">
-              <div class="slider-track"><div class="slider-fill" style="width:90%"></div></div>
+              <div class="slider-track"><div class="slider-fill" style="width:85%"></div></div>
               <div class="slider-knob"></div>
             </div>
           </div>
@@ -722,7 +733,6 @@
   </div>
 
   <script>
-    /* Theme toggle */
     function toggleTheme() {
       const html = document.documentElement;
       const label = document.getElementById('theme-label');
@@ -735,7 +745,6 @@
       }
     }
 
-    /* 1: Joystick wiggle */
     function animateJoystick() {
       const el = document.getElementById('joystick');
       el.classList.remove('wiggle');
@@ -743,7 +752,6 @@
       el.classList.add('wiggle');
     }
 
-    /* 2: Logo spin */
     function animateLogo() {
       const el = document.getElementById('logo');
       el.classList.remove('spin');
@@ -751,7 +759,6 @@
       el.classList.add('spin');
     }
 
-    /* 3: Button cluster pop sequence */
     function animateCluster() {
       const btns = document.querySelectorAll('#cluster .cluster-btn');
       const order = [0, 1, 2, 3].sort(() => Math.random() - 0.5);
@@ -763,20 +770,24 @@
       });
     }
 
-    /* 4: Toggle switch 1 */
     function toggleSwitch1() {
       document.getElementById('toggle1').classList.toggle('on');
     }
 
-    /* 5: Cartridge eject */
+    const textures = ['texture-lines', 'texture-cross', 'texture-diagonal'];
+    let cartridgeTex = 0;
     function animateCartridge() {
       const el = document.getElementById('cartridge');
       el.classList.remove('eject');
       void el.offsetWidth;
       el.classList.add('eject');
+      // cycle cartridge label texture
+      cartridgeTex = (cartridgeTex + 1) % textures.length;
+      const label = document.getElementById('cartridge-label');
+      textures.forEach(t => label.classList.remove(t));
+      label.classList.add(textures[cartridgeTex]);
     }
 
-    /* 6: Power button */
     function animatePower() {
       const el = document.getElementById('power');
       el.classList.toggle('active');
@@ -785,7 +796,6 @@
       el.classList.add('pulse');
     }
 
-    /* 7: D-Pad */
     let dpadDir = 0;
     const dirs = ['pressed-up', 'pressed-right', 'pressed-down', 'pressed-left'];
     function animateDpad() {
@@ -799,12 +809,16 @@
       setTimeout(() => dirs.forEach(d => el.classList.remove(d)), 500);
     }
 
-    /* 8: Toggle switch 2 */
+    let switch2Tex = 0;
     function toggleSwitch2() {
       document.getElementById('toggle2').classList.toggle('on');
+      // cycle switch 2 knob texture
+      switch2Tex = (switch2Tex + 1) % textures.length;
+      const mesh = document.getElementById('switch2-mesh');
+      textures.forEach(t => mesh.classList.remove(t));
+      mesh.classList.add(textures[switch2Tex]);
     }
 
-    /* 9: Dial rotation */
     let dialPos = 0;
     const dialStops = [
       'from 180deg, var(--yellow) 0deg, var(--yellow) 100deg, var(--cyan) 100deg, var(--cyan) 360deg',
@@ -818,7 +832,6 @@
         'conic-gradient(' + dialStops[dialPos] + ')';
     }
 
-    /* 10: Sliders randomize */
     function animateSliders() {
       const fills = document.querySelectorAll('#sliders .slider-fill');
       fills.forEach(fill => {
